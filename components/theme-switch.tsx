@@ -12,11 +12,13 @@ import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
 export interface ThemeSwitchProps {
   className?: string;
   classNames?: SwitchProps["classNames"];
+  iconSize?: number;
 }
 
 export const ThemeSwitch: FC<ThemeSwitchProps> = ({
   className,
   classNames,
+  iconSize = 22,
 }) => {
   const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
@@ -71,9 +73,9 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         })}
       >
         {!isSelected || isSSR ? (
-          <SunFilledIcon size={22} />
+          <SunFilledIcon size={iconSize} />
         ) : (
-          <MoonFilledIcon size={22} />
+          <MoonFilledIcon size={iconSize} />
         )}
       </div>
     </Component>

@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { Link } from "@heroui/link";
+import { Tooltip } from "@heroui/tooltip";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
@@ -47,13 +48,25 @@ export default function RootLayout({
           <AuthInitializer />
           <div className="relative flex flex-col h-screen">
             {/* No Navbar, but add floating theme switch */}
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-              {children}
-            </main>
+            <main className="container flex-grow">{children}</main>
             {/* Floating theme switch button */}
-            <div className="fixed bottom-6 right-6 z-50">
-              <ThemeSwitch />
+            <div className="fixed bottom-4 md:bottom-6 right-6 z-50">
+              <Tooltip
+                content="Toggle theme"
+                placement="top-end"
+                className="z-50"
+              >
+                <span>
+                  <ThemeSwitch iconSize={30} />
+                </span>
+              </Tooltip>
             </div>
+            {/* Centered footer */}
+            <footer className="absolute left-0 right-0 bottom-0 flex justify-center items-center pb-2 pointer-events-none select-none">
+              <span className="text-xs text-default-500 font-semibold">
+                Powered by Team Terabytes
+              </span>
+            </footer>
           </div>
         </Providers>
       </body>
