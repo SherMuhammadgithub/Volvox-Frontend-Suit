@@ -38,3 +38,9 @@ pnpm-lock.yaml
 yarn.lock
 package-lock.json
 bun.lockb
+
+# add env 
+.env.local
+.env.development.local
+.env.test.local
+.env
