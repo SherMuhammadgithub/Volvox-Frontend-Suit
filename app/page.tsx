@@ -1,56 +1,64 @@
-import { Link } from "@heroui/link";
-import { Snippet } from "@heroui/snippet";
-import { Code } from "@heroui/code";
-import { button as buttonStyles } from "@heroui/theme";
+"use client";
 
-import { siteConfig } from "@/config/site";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardBody } from "@heroui/card";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
 import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { useAuthStore } from "@/store/authStore";
 
 export default function Home() {
+  const router = useRouter();
+  const { isAuthenticated, initializeAuth } = useAuthStore();
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  useEffect(() => {
+    // Redirect based on authentication status
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    } else {
+      router.push("/login");
+    }
+  }, [isAuthenticated, router]);
+
+  // Show a loading state while checking authentication
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-        <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
-        <div className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </div>
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div>
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 min-h-screen">
+      <Card className="max-w-md">
+        <CardBody className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <div>
+            <h1 className={title({ size: "sm" })}>Welcome</h1>
+            <p className={subtitle({ class: "mt-2" })}>
+              Redirecting you to the right place...
+            </p>
+          </div>
+          <div className="flex gap-2 justify-center">
+            <Button
+              as={Link}
+              href="/login"
+              color="primary"
+              variant="flat"
+              size="sm"
+            >
+              Login
+            </Button>
+            <Button
+              as={Link}
+              href="/signup"
+              color="secondary"
+              variant="flat"
+              size="sm"
+            >
+              Sign Up
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
     </section>
   );
 }
