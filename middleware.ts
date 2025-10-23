@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
     request.headers.get("authorization")?.replace("Bearer ", "") ||
     null;
 
-  // Define public routes (accessible without authentication)
+  // Define public routes accessible without authentication
   const publicRoutes = ["/auth/login", "/auth/signup", "/"];
   const isPublicRoute = publicRoutes.includes(pathname);
 
