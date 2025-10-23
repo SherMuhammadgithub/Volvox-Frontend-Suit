@@ -11,6 +11,8 @@ import { fontSans } from "@/config/fonts";
 // import { Navbar } from "@/components/navbar";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { AuthInitializer } from "@/components/auth-initializer";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { PWAInstallModal } from "@/components/pwa-install-modal";
 
 export const metadata: Metadata = {
   title: {
@@ -37,16 +39,23 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en">
-      <head />
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#38975b" />
+      </head>
       <body
+        suppressHydrationWarning
         className={clsx(
           "min-h-screen text-foreground bg-background font-sans antialiased",
           fontSans.variable
         )}
       >
+        <ServiceWorkerRegister />
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <AuthInitializer />
           <div className="relative flex flex-col h-screen">
+            {/* PWA Install Modal */}
+            <PWAInstallModal />
             {/* No Navbar, but add floating theme switch */}
             <main className="container flex-grow">{children}</main>
             {/* Floating theme switch button */}
@@ -61,12 +70,6 @@ export default function RootLayout({
                 </span>
               </Tooltip>
             </div>
-            {/* Centered footer */}
-            <footer className="absolute left-0 right-0 bottom-0 flex justify-center items-center pb-2 pointer-events-none select-none">
-              <span className="text-xs text-default-500 font-semibold">
-                Powered by Team Terabytes
-              </span>
-            </footer>
           </div>
         </Providers>
       </body>
