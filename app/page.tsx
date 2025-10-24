@@ -40,7 +40,7 @@ export default function Home() {
           <div className="flex gap-2 justify-center">
             <Button
               as={Link}
-              href="/login"
+              href="/auth/login"
               color="primary"
               variant="flat"
               size="sm"
@@ -49,7 +49,7 @@ export default function Home() {
             </Button>
             <Button
               as={Link}
-              href="/signup"
+              href="/auth/signup"
               color="secondary"
               variant="flat"
               size="sm"
