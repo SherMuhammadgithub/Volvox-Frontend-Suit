@@ -22,19 +22,19 @@ const config = {
         dark: {
           colors: {
             primary: {
-              DEFAULT: "#1f2937", // Gray-800 (Tailwind) for a "grash" look
-              foreground: "#f3f4f6", // Gray-100 for high contrast text
+              DEFAULT: "#1f2937",
+              foreground: "#f3f4f6",
             },
-            focus: "#374151", // Gray-700 for focus state
+            focus: "#374151",
           },
         },
         light: {
           colors: {
             primary: {
-              DEFAULT: "#000000", // Black for buttons/background
-              foreground: "#FFFFFF", // White text for contrast
+              DEFAULT: "#000000",
+              foreground: "#FFFFFF",
             },
-            focus: "#222222", // Slightly lighter black for focus
+            focus: "#222222",
           },
         },
       },
