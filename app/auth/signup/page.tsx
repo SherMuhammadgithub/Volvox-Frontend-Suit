@@ -163,7 +163,7 @@ export default function SignupPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left section: only visible on large screens */}
-      <div className="hidden lg:flex w-[55%] min-h-screen items-center justify-center bg-primary text-primary-foreground rounded-r-3xl">
+      <div className="hidden lg:flex w-[50%] min-h-screen items-center justify-center bg-primary text-primary-foreground rounded-r-3xl">
         <div className="flex flex-col justify-center items-center w-full h-full px-12">
           <h1 className="text-5xl font-extrabold mb-4 tracking-tight">
             VOLVOX
@@ -320,7 +320,11 @@ export default function SignupPage() {
             <div className="text-center">
               <p className="text-sm text-default-500">
                 Already have an account?{" "}
-                <Link href="/auth/login" size="sm" className="font-semibold">
+                <Link
+                  href="/auth/login"
+                  size="sm"
+                  className="font-semibold text-default-500"
+                >
                   Sign in
                 </Link>
               </p>

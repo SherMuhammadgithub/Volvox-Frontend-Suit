@@ -133,7 +133,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left section: only visible on large screens */}
-      <div className="hidden lg:flex flex-col justify-center items-center w-[55%] bg-primary text-primary-foreground px-12 rounded-r-3xl">
+      <div className="hidden lg:flex flex-col justify-center items-center w-[50%] bg-primary text-primary-foreground px-12 rounded-r-3xl">
         <h1 className="text-5xl font-extrabold mb-4 tracking-tight">VOLVOX</h1>
         <h2 className="text-2xl font-bold mb-2">WELCOME BACK!</h2>
         <p className="text-lg font-medium text-primary-foreground/80 text-center max-w-md">

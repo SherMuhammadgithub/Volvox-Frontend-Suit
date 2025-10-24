@@ -57,7 +57,7 @@ export default function RootLayout({
             {/* PWA Install Modal */}
             <PWAInstallModal />
             {/* No Navbar, but add floating theme switch */}
-            <main className="container flex-grow">{children}</main>
+            <main>{children}</main>
             {/* Floating theme switch button */}
             <div className="fixed bottom-4 md:bottom-6 right-6 z-50">
               <Tooltip

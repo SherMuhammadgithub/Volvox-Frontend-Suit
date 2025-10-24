@@ -36,7 +36,7 @@ export default function DashboardPage() {
   //   }
 
   return (
-    <div className="flex flex-col justify-center w-full p-6 space-y-6">
+    <div className="flex flex-col justify-center  w-full p-6 space-y-6">
       {/* Welcome Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Welcome to your Dashboard!</h1>
