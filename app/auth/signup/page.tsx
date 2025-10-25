@@ -57,7 +57,7 @@ export default function SignupPage() {
   const { login, setLoading, isLoading } = useAuthStore();
 
   const [formData, setFormData] = useState<SignupForm>({
-    name: "",
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -65,7 +65,7 @@ export default function SignupPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{
-    name?: string;
+    fullName?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -78,7 +78,7 @@ export default function SignupPage() {
     const result = signupSchema.safeParse(formData);
     if (!result.success) {
       const errors: {
-        name?: string;
+        fullName?: string;
         email?: string;
         password?: string;
         confirmPassword?: string;
@@ -110,6 +110,7 @@ export default function SignupPage() {
 
     try {
       const { access_token, user } = await signupApi(
+        formData.fullName,
         formData.email,
         formData.password
       );
@@ -180,13 +181,13 @@ export default function SignupPage() {
               placeholder="Enter your full name"
               type="text"
               variant="bordered"
-              value={formData.name}
+              value={formData.fullName}
               onValueChange={(value: string) =>
-                handleInputChange("name", value)
+                handleInputChange("fullName", value)
               }
               onKeyPress={handleKeyPress}
-              isInvalid={!!validationErrors.name}
-              errorMessage={validationErrors.name}
+              isInvalid={!!validationErrors.fullName}
+              errorMessage={validationErrors.fullName}
               classNames={{
                 input: "text-sm",
                 label: "text-sm",
