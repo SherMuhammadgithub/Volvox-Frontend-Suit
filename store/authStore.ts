@@ -1,10 +1,11 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
   email: string;
-  name: string;
+  name?: string;
+  createdAt?: string;
 }
 
 interface AuthState {
@@ -20,6 +21,7 @@ interface AuthState {
   login: (token: string, user: User) => void;
   logout: () => void;
   initializeAuth: () => void;
+  setAuthFromApiResponse: (res: any) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -30,49 +32,67 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
-      
+
       setToken: (token) => set({ token, isAuthenticated: !!token }),
       setUser: (user) => set({ user }),
       setLoading: (isLoading) => set({ isLoading }),
       setError: (error) => set({ error }),
-      
+
       login: (token, user) => {
         // Store token in sessionStorage for middleware access
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('auth-token', token);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("auth-token", token);
         }
-        set({ 
-          token, 
-          user, 
-          isAuthenticated: true, 
-          error: null 
+        set({
+          token,
+          user,
+          isAuthenticated: true,
+          error: null,
         });
       },
-      
+
+      setAuthFromApiResponse: (res) => {
+        if (!res || !res.access_token || !res.user) return;
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("auth-token", res.access_token);
+        }
+        const user = {
+          id: res.user._id,
+          email: res.user.email,
+          createdAt: res.user.created_at,
+        };
+        set({
+          token: res.access_token,
+          user,
+          isAuthenticated: true,
+          error: null,
+        });
+      },
+
       logout: () => {
         // Clear sessionStorage
-        if (typeof window !== 'undefined') {
-          sessionStorage.removeItem('auth-token');
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("auth-token");
         }
-        set({ 
-          token: null, 
-          user: null, 
-          isAuthenticated: false, 
-          error: null 
+        set({
+          token: null,
+          user: null,
+          isAuthenticated: false,
+          error: null,
         });
       },
-      
+
       initializeAuth: () => {
-        if (typeof window !== 'undefined') {
-          const token = sessionStorage.getItem('auth-token');
+        if (typeof window !== "undefined") {
+          const token = sessionStorage.getItem("auth-token");
           if (token) {
             set({ token, isAuthenticated: true });
           }
         }
-      }
+      },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       // Only persist user data, not sensitive tokens
       partialize: (state) => ({ user: state.user }),
     }

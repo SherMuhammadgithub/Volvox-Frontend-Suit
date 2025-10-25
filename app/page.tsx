@@ -6,24 +6,20 @@ import { Card, CardBody } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { title, subtitle } from "@/components/primitives";
-import { useAuthStore } from "@/store/authStore";
 
 export default function Home() {
   const router = useRouter();
-  const { isAuthenticated, initializeAuth } = useAuthStore();
 
   useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
-
-  useEffect(() => {
-    // Redirect based on authentication status
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    } else {
-      router.push("/login");
+    if (typeof window !== "undefined") {
+      const token = sessionStorage.getItem("auth-token");
+      if (token) {
+        router.replace("/dashboard");
+      } else {
+        router.replace("/auth/login");
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [router]);
 
   // Show a loading state while checking authentication
   return (

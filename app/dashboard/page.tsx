@@ -20,20 +20,20 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     logout();
-    router.push("/login");
+    router.push("auth/login");
   };
 
   // Show loading state while auth is initializing
-  //   if (!isAuthenticated || !user) {
-  //     return (
-  //       <div className="flex items-center justify-center min-h-screen">
-  //         <div className="text-center">
-  //           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-  //           <p className="text-default-500">Loading...</p>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-default-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-center  w-full p-6 space-y-6">
@@ -55,8 +55,7 @@ export default function DashboardPage() {
             className="text-large"
           />
           <div className="flex flex-col">
-            <p className="text-md font-semibold">Sher Muhammad</p>
-            <p className="text-small text-default-500">@</p>
+            <p className="text-md font-semibold">{user.email}</p>
           </div>
           <div className="ml-auto">
             <Chip color="success" variant="flat">
@@ -67,10 +66,6 @@ export default function DashboardPage() {
         <Divider />
         <CardBody>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-default-500 mb-1">User ID</p>
-              <p className="font-mono text-sm">PID1010</p>
-            </div>
             <div>
               <p className="text-sm text-default-500 mb-1">Account Status</p>
               <Chip size="sm" color="success" variant="flat">

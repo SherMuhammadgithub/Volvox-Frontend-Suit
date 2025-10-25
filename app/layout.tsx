@@ -52,7 +52,7 @@ export default function RootLayout({
       >
         <ServiceWorkerRegister />
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <AuthInitializer />
+          {/* <AuthInitializer /> */}
           <div className="relative flex flex-col h-screen">
             {/* PWA Install Modal */}
             <PWAInstallModal />

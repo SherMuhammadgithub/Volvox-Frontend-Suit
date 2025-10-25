@@ -7,8 +7,11 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Divider } from "@heroui/divider";
-import axios from "axios";
+
 import { useAuthStore } from "@/store/authStore";
+import { signupApi } from "@/api/auth";
+import { signupSchema, SignupForm } from "@/store/validation";
+import { ZodIssue } from "zod";
 
 // Simple eye icons as SVG components
 const EyeIcon = () => (
@@ -51,9 +54,9 @@ const EyeSlashIcon = () => (
 
 export default function SignupPage() {
   const router = useRouter();
-  const { login, setLoading, setError, isLoading, error } = useAuthStore();
+  const { login, setLoading, isLoading } = useAuthStore();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SignupForm>({
     name: "",
     email: "",
     password: "",
@@ -72,46 +75,24 @@ export default function SignupPage() {
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
 
   const validateForm = () => {
-    const errors: {
-      name?: string;
-      email?: string;
-      password?: string;
-      confirmPassword?: string;
-    } = {};
-
-    // Name validation
-    if (!formData.name.trim()) {
-      errors.name = "Full name is required";
-    } else if (formData.name.trim().length < 2) {
-      errors.name = "Name must be at least 2 characters";
+    const result = signupSchema.safeParse(formData);
+    if (!result.success) {
+      const errors: {
+        name?: string;
+        email?: string;
+        password?: string;
+        confirmPassword?: string;
+      } = {};
+      (result.error.issues || []).forEach((err: ZodIssue) => {
+        if (typeof err.path[0] === "string") {
+          errors[err.path[0] as keyof typeof errors] = err.message;
+        }
+      });
+      setValidationErrors(errors);
+      return false;
     }
-
-    // Email validation
-    if (!formData.email) {
-      errors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
-    }
-
-    // Password validation
-    if (!formData.password) {
-      errors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      errors.password = "Password must be at least 8 characters";
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      errors.password =
-        "Password must contain at least one uppercase, lowercase, and number";
-    }
-
-    // Confirm password validation
-    if (!formData.confirmPassword) {
-      errors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+    setValidationErrors({});
+    return true;
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -120,35 +101,21 @@ export default function SignupPage() {
     if (validationErrors[field as keyof typeof validationErrors]) {
       setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-    // Clear global error
-    if (error) {
-      setError(null);
-    }
   };
 
   const handleSignup = async () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    setError(null);
 
     try {
-      // Replace with your actual API endpoint
-      const response = await axios.post("/api/auth/signup", {
-        name: formData.name.trim(),
-        email: formData.email,
-        password: formData.password,
-      });
-
-      const { token, user } = response.data;
-
-      // Update auth state and redirect
-      login(token, user);
+      const { access_token, user } = await signupApi(
+        formData.email,
+        formData.password
+      );
+      login(access_token, user);
       router.push("/dashboard");
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Signup failed. Please try again.";
-      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -297,12 +264,6 @@ export default function SignupPage() {
                 label: "text-sm",
               }}
             />
-
-            {error && (
-              <div className="text-danger text-sm text-center bg-danger-50 dark:bg-danger-900/20 p-3 rounded-lg">
-                {error}
-              </div>
-            )}
 
             <Button
               color="primary"

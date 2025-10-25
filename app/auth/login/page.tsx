@@ -45,14 +45,18 @@ const EyeSlashIcon = () => (
     />
   </svg>
 );
-import axios from "axios";
+
 import { useAuthStore } from "@/store/authStore";
+import { loginApi } from "@/api/auth";
+import { loginSchema, LoginForm } from "@/store/validation";
+import { ZodIssue } from "zod";
+import { addToast } from "@heroui/toast";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, setLoading, setError, isLoading, error } = useAuthStore();
+  const { login, setLoading, isLoading } = useAuthStore();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LoginForm>({
     email: "",
     password: "",
   });
@@ -65,24 +69,19 @@ export default function LoginPage() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const validateForm = () => {
-    const errors: { email?: string; password?: string } = {};
-
-    // Email validation
-    if (!formData.email) {
-      errors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
+    const result = loginSchema.safeParse(formData);
+    if (!result.success) {
+      const errors: { email?: string; password?: string } = {};
+      (result.error.issues || []).forEach((err: ZodIssue) => {
+        if (typeof err.path[0] === "string") {
+          errors[err.path[0] as "email" | "password"] = err.message;
+        }
+      });
+      setValidationErrors(errors);
+      return false;
     }
-
-    // Password validation
-    if (!formData.password) {
-      errors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+    setValidationErrors({});
+    return true;
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -91,34 +90,32 @@ export default function LoginPage() {
     if (validationErrors[field as keyof typeof validationErrors]) {
       setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-    // Clear global error
-    if (error) {
-      setError(null);
-    }
   };
 
   const handleLogin = async () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    setError(null);
 
     try {
-      // Replace with your actual API endpoint
-      const response = await axios.post("/api/auth/login", {
-        email: formData.email,
-        password: formData.password,
+      const { access_token, user } = await loginApi(
+        formData.email,
+        formData.password
+      );
+      login(access_token, user);
+
+      addToast({
+        title: "Login successful",
+        description: "You have been logged in successfully.",
+        color: "success",
       });
-
-      const { token, user } = response.data;
-
-      // Update auth state and redirect
-      login(token, user);
       router.push("/dashboard");
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Login failed. Please try again.";
-      setError(errorMessage);
+      addToast({
+        title: "Login failed",
+        description: err.message || "Please try again.",
+        color: "danger",
+      });
     } finally {
       setLoading(false);
     }
@@ -239,12 +236,6 @@ export default function LoginPage() {
                 label: "text-sm",
               }}
             />
-
-            {error && (
-              <div className="text-danger text-sm text-center bg-danger-50 dark:bg-danger-900/20 p-3 rounded-lg">
-                {error}
-              </div>
-            )}
 
             <Button
               color="primary"
