@@ -56,7 +56,7 @@ export default function ResearchWorkFormModal({
     } catch (err: any) {
       addToast({
         title: "Error",
-        description: err.message || "Please try again.",
+        description: err?.response?.data?.detail || "Please try again.",
         color: "danger",
       });
     } finally {

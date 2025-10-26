@@ -74,28 +74,26 @@ export default function ManageResearchWork() {
   return (
     <div className="max-w-7xl mx-auto p-2 sm:p-4 space-y-6">
       <Card className="overflow-x-auto">
-        <CardHeader className="flex items-center justify-between gap-2 flex-wrap">
-          <h1 className="text-2xl font-bold truncate">Manage Research Work</h1>
-          {/* Show icon button on small screens, full button on md+ */}
-          <>
-            <Button
-              color="primary"
-              isIconOnly
-              className="sm:hidden"
-              aria-label="Add Research Work"
-              onPress={() => setModalOpen(true)}
-            >
-              <PlusIcon className="w-6 h-6" />
-            </Button>
-            <Button
-              color="primary"
-              className="hidden sm:inline-flex"
-              onPress={() => setModalOpen(true)}
-            >
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Add Research Work
-            </Button>
-          </>
+        <CardHeader className="flex flex-col items-center sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-t-lg border-b border-default-200">
+          <div className="flex-1 w-full">
+            <h1 className="text-xl sm:text-2xl font-bold truncate text-center sm:text-left w-full sm:w-auto">
+              Manage Research Work
+            </h1>
+            <p className="text-default-500 text-sm mt-2 max-w-2xl text-center sm:text-left mx-auto sm:mx-0">
+              Here you can add, search, and manage all your research documents.
+              Use the filters to quickly find research work by title or date,
+              and upload new documents to keep your research organized.
+            </p>
+          </div>
+          <Button
+            color="primary"
+            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+            onPress={() => setModalOpen(true)}
+            aria-label="Add Research Work"
+          >
+            <PlusIcon className="w-5 h-5" />
+            <span className="inline">Add Research Work</span>
+          </Button>
         </CardHeader>
         <div className="p-2 sm:p-4 space-y-6 overflow-x-auto">
           <ResearchWorkFormModal

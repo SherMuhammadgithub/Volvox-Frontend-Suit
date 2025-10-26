@@ -12,6 +12,7 @@ import { useAuthStore } from "@/store/authStore";
 import { signupApi } from "@/api/auth";
 import { signupSchema, SignupForm } from "@/store/validation";
 import { ZodIssue } from "zod";
+import { addToast } from "@heroui/toast";
 
 // Simple eye icons as SVG components
 const EyeIcon = () => (
@@ -115,8 +116,23 @@ export default function SignupPage() {
         formData.password
       );
       login(access_token, user);
+      addToast({
+        title: "Signup successful",
+        description: "You have been signed up successfully.",
+        color: "success",
+      });
+
       router.push("/dashboard");
     } catch (err: any) {
+      console.log("errr:", err);
+
+      addToast({
+        title: "Signup failed",
+        description:
+          err?.response?.data?.detail ||
+          "Please check your details and try again.",
+        color: "danger",
+      });
     } finally {
       setLoading(false);
     }

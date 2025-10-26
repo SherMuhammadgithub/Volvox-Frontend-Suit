@@ -114,7 +114,7 @@ export function ResearchWorkList({
       </div>
 
       {/* use the divider to indicate the difference */}
-      <Divider className="my-8" />
+      <Divider className="my-6" />
       {/* Flat grid of document cards, no sections */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {loading ? (

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { addResearchWork, getResearchWorks } from "@/api/research";
+import { addToast } from "@heroui/toast";
 
 interface ResearchWork {
   _id: string;
@@ -52,10 +53,24 @@ export const useResearchStore = create<ResearchState>((set) => ({
       throw error;
     }
   },
-  async fetchResearchWorks({ limit = 10, offset = 0, search = "", start, end, authToken }) {
+  async fetchResearchWorks({
+    limit = 10,
+    offset = 0,
+    search = "",
+    start,
+    end,
+    authToken,
+  }) {
     set({ loading: true, error: null });
     try {
-      const data = await getResearchWorks({ limit, offset, search, start, end, authToken });
+      const data = await getResearchWorks({
+        limit,
+        offset,
+        search,
+        start,
+        end,
+        authToken,
+      });
       set({ researchWorks: data, loading: false });
     } catch (error: any) {
       set({
@@ -64,6 +79,12 @@ export const useResearchStore = create<ResearchState>((set) => ({
           error?.response?.data?.message ||
           error.message ||
           "Failed to fetch research works",
+      });
+
+      addToast({
+        title: "Error",
+        description: error?.response?.data?.detail || "Please try again.",
+        color: "danger",
       });
     }
   },

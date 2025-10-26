@@ -113,7 +113,7 @@ export default function LoginPage() {
     } catch (err: any) {
       addToast({
         title: "Login failed",
-        description: err.message || "Please try again.",
+        description: err?.response?.data?.detail || "Please try again.",
         color: "danger",
       });
     } finally {

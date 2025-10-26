@@ -196,7 +196,7 @@ export default function DashboardLayout({
         </Drawer>
       </div>
       {/* Main content */}
-      <main className="flex-1  overflow-y-auto my-14">{children}</main>
+      <main className="flex-1  overflow-y-auto mt-14">{children}</main>
     </div>
   );
 }
