@@ -77,7 +77,7 @@ export default function ManageResearchWork() {
         <CardHeader className="flex flex-col items-center sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-t-lg border-b border-default-200">
           <div className="flex-1 w-full">
             <h1 className="text-xl sm:text-2xl font-bold truncate text-center sm:text-left w-full sm:w-auto">
-              Manage Research Work
+              Your Research Work
             </h1>
             <p className="text-default-500 text-sm mt-2 max-w-2xl text-center sm:text-left mx-auto sm:mx-0">
               Here you can add, search, and manage all your research documents.
