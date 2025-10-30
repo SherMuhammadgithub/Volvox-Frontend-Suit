@@ -4,19 +4,29 @@ import { Card, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import ResearchWorkFormModal from "./ResearchWorkFormModal";
+import EditResearchModal from "./EditResearchModal";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 import { ResearchWorkList } from "./ResearchWorkList";
 import React, { useState } from "react";
 import { useResearchStore } from "@/store/researchStore";
 import { useAuthStore } from "@/store/authStore";
+import { ResearchWork } from "@/types";
 
 export default function ManageResearchWork() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedResearch, setSelectedResearch] = useState<ResearchWork | null>(null);
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
     null,
   ]);
+
+
   const addResearch = useResearchStore((s) => s.addResearch);
+  const updateResearch = useResearchStore((s) => s.updateResearch);
+  const deleteResearch = useResearchStore((s) => s.deleteResearch);
   const fetchResearchWorks = useResearchStore((s) => s.fetchResearchWorks);
   const researchWorks = useResearchStore((s) => s.researchWorks);
   const loading = useResearchStore((s) => s.loading);
@@ -71,6 +81,71 @@ export default function ManageResearchWork() {
     }
   };
 
+  const handleEditResearch = (research: ResearchWork) => {
+    setSelectedResearch(research);
+    setEditModalOpen(true);
+  };
+
+  const handleUpdateResearch = async (researchId: string, title: string, file?: File) => {
+    if (!authToken) return;
+    try {
+      // Mock update for testing (when no real API)
+      if (researchId.startsWith('mock-')) {
+        console.log('🔄 Mock Update Research:', { researchId, title, fileName: file?.name });
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Mock success - in real app this would update the backend
+      } else {
+        await updateResearch({
+          researchId,
+          researchName: title,
+          file,
+          authToken,
+        });
+      }
+      // Refetch after updating
+      handleSearch();
+      setEditModalOpen(false);
+      setSelectedResearch(null);
+    } catch (error) {
+      throw error; // Let the modal handle the error
+    }
+  };
+
+  const handleDeleteResearch = (researchId: string) => {
+    const research = researchWorks.find(r => (r._id || r.id) === researchId);
+    if (research) {
+      setSelectedResearch(research);
+      setDeleteModalOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedResearch || !authToken) return;
+    try {
+      const researchId = selectedResearch._id || selectedResearch.id || "";
+
+      // Mock delete for testing (when no real API)
+      if (researchId.startsWith('mock-')) {
+        console.log('🗑️ Mock Delete Research:', { researchId, name: selectedResearch.researchName });
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Mock success - in real app this would delete from backend
+      } else {
+        await deleteResearch({
+          researchId,
+          authToken,
+        });
+      }
+      // Refetch after deleting
+      handleSearch();
+      setDeleteModalOpen(false);
+      setSelectedResearch(null);
+    } catch (error) {
+      throw error; // Let the modal handle the error
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-2 sm:p-4 space-y-6">
       <Card className="overflow-x-auto">
@@ -103,6 +178,24 @@ export default function ManageResearchWork() {
             loading={loading}
             error={error}
           />
+
+          <EditResearchModal
+            isOpen={editModalOpen}
+            onOpenChange={setEditModalOpen}
+            research={selectedResearch}
+            onSubmit={handleUpdateResearch}
+            loading={loading}
+            error={error}
+          />
+
+          <DeleteConfirmModal
+            isOpen={deleteModalOpen}
+            onOpenChange={setDeleteModalOpen}
+            researchName={selectedResearch?.researchName || selectedResearch?.title || ""}
+            onConfirm={handleConfirmDelete}
+            loading={loading}
+          />
+
           <ResearchWorkList
             researchWorks={researchWorks}
             search={search}
@@ -112,6 +205,8 @@ export default function ManageResearchWork() {
             loading={loading}
             onSearch={handleSearch}
             onClear={handleClear}
+            onEdit={handleEditResearch}
+            onDelete={handleDeleteResearch}
           />
         </div>
       </Card>

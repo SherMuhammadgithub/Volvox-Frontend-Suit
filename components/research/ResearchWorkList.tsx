@@ -6,30 +6,13 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { ResearchCard } from "./ResearchCard";
 import { Skeleton } from "@heroui/skeleton";
-import { DatePicker } from "@heroui/date-picker";
+import { DatePicker } from "@heroui/react";
 import { Divider } from "@heroui/divider";
 import { useAuthStore } from "@/store/authStore";
-
-// Dummy data for now
-const dummyResearch = [
-  {
-    id: 1,
-    title: "AI for Healthcare",
-    date: new Date("2025-10-01T10:00:00"),
-    fileName: "ai-healthcare.pdf",
-    fileUrl: "#",
-  },
-  {
-    id: 2,
-    title: "Quantum Computing Advances",
-    date: new Date("2025-10-10T15:30:00"),
-    fileName: "quantum.pdf",
-    fileUrl: "#",
-  },
-];
+import { ResearchWork } from "@/types";
 
 interface ResearchWorkListProps {
-  researchWorks?: any[];
+  researchWorks?: ResearchWork[];
   search: string;
   setSearch: (s: string) => void;
   dateRange: [Date | null, Date | null];
@@ -37,6 +20,8 @@ interface ResearchWorkListProps {
   loading?: boolean;
   onSearch: () => void;
   onClear: () => void;
+  onEdit: (research: ResearchWork) => void;
+  onDelete: (researchId: string) => void;
 }
 
 export function ResearchWorkList({
@@ -48,6 +33,8 @@ export function ResearchWorkList({
   loading = false,
   onSearch,
   onClear,
+  onEdit,
+  onDelete,
 }: ResearchWorkListProps) {
   // Convert JS Date <-> CalendarDate for DatePicker
   function toCalendarDate(d: Date | null): CalendarDate | null {
@@ -63,18 +50,76 @@ export function ResearchWorkList({
   }
   const fromDate = dateRange[0];
   const toDate = dateRange[1];
-  const filtered = researchWorks.filter(
-    (r) =>
-      (r.researchName || r.title || "")
-        .toLowerCase()
-        .includes(search.toLowerCase()) &&
-      (!fromDate || new Date(r.createdAt || r.date) >= fromDate) &&
-      (!toDate || new Date(r.createdAt || r.date) <= toDate)
+  // Mock data for testing when no real data is available
+  const mockResearchWorks: ResearchWork[] = [
+    // {
+    //   _id: "mock-1",
+    //   researchName: "AI in Healthcare Research",
+    //   fileName: "ai-healthcare-study.pdf",
+    //   file_id: "file-1",
+    //   extension: "pdf",
+    //   createdAt: "2024-10-15T10:00:00Z"
+    // },
+    // {
+    //   _id: "mock-2", 
+    //   researchName: "Quantum Computing Analysis",
+    //   fileName: "quantum-computing.docx",
+    //   file_id: "file-2",
+    //   extension: "docx",
+    //   createdAt: "2024-10-20T14:30:00Z"
+    // },
+    // {
+    //   _id: "mock-3",
+    //   researchName: "Machine Learning in Finance",
+    //   fileName: "ml-finance-report.pdf", 
+    //   file_id: "file-3",
+    //   extension: "pdf",
+    //   createdAt: "2024-10-25T09:15:00Z"
+    // },
+    // {
+    //   _id: "mock-4",
+    //   researchName: "Blockchain Technology Study",
+    //   fileName: "blockchain-research.pptx",
+    //   file_id: "file-4", 
+    //   extension: "pptx",
+    //   createdAt: "2024-10-28T16:45:00Z"
+    // },
+    // {
+    //   _id: "mock-5",
+    //   researchName: "Climate Change Data Analysis",
+    //   fileName: "climate-data.xlsx",
+    //   file_id: "file-5",
+    //   extension: "xlsx", 
+    //   createdAt: "2024-10-30T11:20:00Z"
+    // }
+  ];
+
+  // Use mock data if no real research works are available
+  const dataToUse = researchWorks.length > 0 ? researchWorks : mockResearchWorks;
+
+  const filtered = dataToUse.filter(
+    (r) => {
+      const researchDate = new Date(r.createdAt || r.date || "");
+      return (
+        (r.researchName || r.title || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) &&
+        (!fromDate || researchDate >= fromDate) &&
+        (!toDate || researchDate <= toDate)
+      );
+    }
   );
 
   // download file function
   async function handleDownload(fileId: string, mode: "open" | "download") {
     try {
+      // Mock download for testing
+      if (fileId.startsWith('file-')) {
+        console.log(`📁 Mock ${mode} file:`, fileId);
+        alert(`Mock ${mode} for file: ${fileId}\n(In real app, this would ${mode} the actual file)`);
+        return;
+      }
+      
       const authToken = useAuthStore.getState().getAuthToken();
       await openOrDownloadFile(fileId, authToken || "", mode);
     } catch (error) {
@@ -144,6 +189,8 @@ export function ResearchWorkList({
               research={r}
               onOpen={(fileId) => handleDownload(fileId, "open")}
               onDownload={(fileId) => handleDownload(fileId, "download")}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))
         )}

@@ -88,3 +88,48 @@ export async function openOrDownloadFile(
     document.body.removeChild(link);
   }
 }
+
+export async function updateResearchWork({
+  researchId,
+  researchName,
+  file,
+  authToken,
+}: {
+  researchId: string;
+  researchName: string;
+  file?: File;
+  authToken: string;
+}) {
+  const formData = new FormData();
+  formData.append("researchName", researchName);
+  if (file) {
+    formData.append("file", file);
+  }
+
+  const response = await axios.put(
+    `${API_BASE}/research/${researchId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+  return response.data;
+}
+
+export async function deleteResearchWork({
+  researchId,
+  authToken,
+}: {
+  researchId: string;
+  authToken: string;
+}) {
+  const response = await axios.delete(`${API_BASE}/research/${researchId}`, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+  return response.data;
+}
