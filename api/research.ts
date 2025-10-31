@@ -62,44 +62,52 @@ export async function addResearchWork({
 }
 
 export async function openOrDownloadFile(
-  fileId: string,
-  fileName: string,
+  file_id: string,
   authToken: string,
-  mode: "open" | "download"
+  mode: "open" | "download" = "download",
+  fileName?: string // Actual filename from database
 ) {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/research/files/${fileId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      }
-    );
+  if (!authToken) throw new Error("Missing auth token");
 
-    if (!response.ok) throw new Error("Failed to fetch file");
+  const response = await axios.get(`${API_BASE}/research/file/${file_id}`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+  const mimeType = response.headers["content-type"] || "application/octet-stream";
 
-    if (mode === "download") {
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName; // Use actual filename from response/parameter
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } else {
-      window.open(url, "_blank");
-    }
-  } catch (error) {
-    console.error("Error in openOrDownloadFile:", error);
-    throw error;
+  // Use the provided fileName if available, otherwise fall back to file_id
+  const downloadFileName = fileName || file_id;
+
+  const url = window.URL.createObjectURL(
+    new Blob([response.data], { type: mimeType })
+  );
+
+  if (mode === "open") {
+    // Create a temporary link with download attribute to preserve filename
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = downloadFileName;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    // Revoke URL after delay to allow tab to open
+    setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+  } else {
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    // Revoke URL after download starts
+    setTimeout(() => window.URL.revokeObjectURL(url), 1000);
   }
 }
-
 export async function updateResearchWork({
   researchId,
   researchName,
@@ -118,7 +126,7 @@ export async function updateResearchWork({
   }
 
   const response = await axios.put(
-    `${API_BASE}/research/${researchId}`,
+    `${API_BASE}/research/updateResearch/${researchId}`,
     formData,
     {
       headers: {
@@ -137,7 +145,7 @@ export async function deleteResearchWork({
   researchId: string;
   authToken: string;
 }) {
-  const response = await axios.delete(`${API_BASE}/research/${researchId}`, {
+  const response = await axios.delete(`${API_BASE}/research/deleteResearch/${researchId}`, {
     headers: {
       Authorization: `Bearer ${authToken}`,
     },
