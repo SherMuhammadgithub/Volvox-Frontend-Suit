@@ -111,7 +111,7 @@ export function ResearchWorkList({
   );
 
   // download file function
-  async function handleDownload(fileId: string, mode: "open" | "download") {
+  async function handleDownload(fileId: string, fileName: string, mode: "open" | "download") {
     try {
       // Mock download for testing
       if (fileId.startsWith('file-')) {
@@ -121,7 +121,7 @@ export function ResearchWorkList({
       }
       
       const authToken = useAuthStore.getState().getAuthToken();
-      await openOrDownloadFile(fileId, authToken || "", mode);
+      await openOrDownloadFile(fileId, fileName, authToken || "", mode);
     } catch (error) {
       console.error("Error downloading file:", error);
     }
@@ -187,8 +187,8 @@ export function ResearchWorkList({
             <ResearchCard
               key={r._id || r.id}
               research={r}
-              onOpen={(fileId) => handleDownload(fileId, "open")}
-              onDownload={(fileId) => handleDownload(fileId, "download")}
+              onOpen={(fileId) => handleDownload(fileId, r.fileName || "document", "open")}
+              onDownload={(fileId) => handleDownload(fileId, r.fileName || "document", "download")}
               onEdit={onEdit}
               onDelete={onDelete}
             />
