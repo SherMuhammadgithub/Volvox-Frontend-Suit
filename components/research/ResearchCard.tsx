@@ -106,7 +106,15 @@ export function ResearchCard({
           {research.fileName}
         </div>
         <div className="text-xs text-default-500 w-full text-center">
-          {new Date(research.createdAt || research.date || "").toLocaleString()}
+          {new Date(research.createdAt || research.date || "").toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          })}
         </div>
         <div className="flex items-center gap-2 mt-2">
           <Button
