@@ -10,6 +10,7 @@ import {
   addToast,
 } from "@heroui/react";
 import { Input } from "@heroui/input";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ResearchWork } from "@/types";
 
 interface EditResearchModalProps {
@@ -33,6 +34,7 @@ export default function EditResearchModal({
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
+  const [showFileInput, setShowFileInput] = useState(false);
 
   // Reset form when research changes
   useEffect(() => {
@@ -40,6 +42,7 @@ export default function EditResearchModal({
       setTitle(research.researchName || research.title || "");
       setFile(null);
       setPreviewUrl(null);
+      setShowFileInput(false);
     }
   }, [research]);
 
@@ -59,10 +62,14 @@ export default function EditResearchModal({
     
     setUpdating(true);
     try {
-      await onSubmit(research._id || research.id || "", title, file || undefined);
+      // Only pass file if user has selected a new one
+      const fileToSend = file ? file : undefined;
+      await onSubmit(research._id || research.id || "", title, fileToSend);
       addToast({
         title: "Success",
-        description: "Research work updated successfully.",
+        description: file 
+          ? "Research work and file updated successfully." 
+          : "Research title updated successfully.",
         color: "success",
       });
       onClose();
@@ -81,7 +88,19 @@ export default function EditResearchModal({
     setTitle("");
     setFile(null);
     setPreviewUrl(null);
+    setShowFileInput(false);
     onOpenChange(false);
+  };
+
+  const handleRemoveFile = () => {
+    setFile(null);
+    setPreviewUrl(null);
+    setShowFileInput(false);
+    // Reset file input
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   };
 
   return (
@@ -102,16 +121,49 @@ export default function EditResearchModal({
                   required
                   disabled={loading || updating}
                 />
-                <Input
-                  label="New File (Optional - leave empty to keep current file)"
-                  type="file"
-                  accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
-                  onChange={handleFileChange}
-                  disabled={loading || updating}
-                />
-                {research && !file && (
-                  <div className="text-sm text-default-500 p-2 bg-default-100 rounded">
-                    Current file: {research.fileName}
+                {!showFileInput && !file && research && (
+                  <div className="space-y-2">
+                    <div className="text-sm text-default-500 p-3 bg-default-100 rounded-lg flex items-center justify-between">
+                      <span>Current file: {research.fileName}</span>
+                      <Button
+                        size="sm"
+                        variant="flat"
+                        color="primary"
+                        onPress={() => setShowFileInput(true)}
+                      >
+                        Change File
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {(showFileInput || file) && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        label="Choose New File"
+                        type="file"
+                        accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
+                        onChange={handleFileChange}
+                        disabled={loading || updating}
+                        className="flex-1"
+                      />
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        color="danger"
+                        onPress={handleRemoveFile}
+                        className="min-w-8 h-8"
+                      >
+                        <XMarkIcon className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {!file && (
+                      <div className="text-xs text-default-400">
+                        No file chosen - only title will be updated
+                      </div>
+                    )}
                   </div>
                 )}
                 {previewUrl && (

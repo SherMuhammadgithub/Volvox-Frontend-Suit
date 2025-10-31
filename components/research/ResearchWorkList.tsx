@@ -111,17 +111,10 @@ export function ResearchWorkList({
   );
 
   // download file function
-  async function handleDownload(fileId: string, fileName: string, mode: "open" | "download") {
+   async function handleDownload(fileId: string, fileName:string,mode: "open" | "download") {
     try {
-      // Mock download for testing
-      if (fileId.startsWith('file-')) {
-        console.log(`📁 Mock ${mode} file:`, fileId);
-        alert(`Mock ${mode} for file: ${fileId}\n(In real app, this would ${mode} the actual file)`);
-        return;
-      }
-      
       const authToken = useAuthStore.getState().getAuthToken();
-      await openOrDownloadFile(fileId, fileName, authToken || "", mode);
+      await openOrDownloadFile(fileId, authToken || "", mode,fileName);
     } catch (error) {
       console.error("Error downloading file:", error);
     }
