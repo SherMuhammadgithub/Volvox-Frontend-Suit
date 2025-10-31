@@ -1,3 +1,7 @@
+import axios from "axios";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 export async function getResearchWorks({
   limit = 10,
   offset = 0,
@@ -30,9 +34,6 @@ export async function getResearchWorks({
   );
   return response.data;
 }
-import axios from "axios";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 export async function addResearchWork({
   researchName,
@@ -61,31 +62,41 @@ export async function addResearchWork({
 }
 
 export async function openOrDownloadFile(
-  file_id: string,
+  fileId: string,
+  fileName: string,
   authToken: string,
-  mode: "open" | "download" = "download"
+  mode: "open" | "download"
 ) {
-  if (!authToken) throw new Error("Missing auth token");
-  const response = await axios.get(`${API_BASE}/research/file/${file_id}`, {
-    responseType: "blob",
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-  const mimeType =
-    response.headers["content-type"] || "application/octet-stream";
-  const url = window.URL.createObjectURL(
-    new Blob([response.data], { type: mimeType })
-  );
-  if (mode === "open") {
-    window.open(url, "_blank");
-  } else {
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", file_id);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/research/files/${fileId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to fetch file");
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    if (mode === "download") {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName; // Use actual filename from response/parameter
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } else {
+      window.open(url, "_blank");
+    }
+  } catch (error) {
+    console.error("Error in openOrDownloadFile:", error);
+    throw error;
   }
 }
 
