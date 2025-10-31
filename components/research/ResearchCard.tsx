@@ -1,17 +1,24 @@
 import { Card, CardBody } from "@heroui/card";
 import { Button } from "@heroui/button";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import { ResearchWork } from "@/types";
 
 interface ResearchCardProps {
-  research: any;
+  research: ResearchWork;
   onOpen: (fileId: string) => void;
   onDownload: (fileId: string) => void;
+  onEdit: (research: ResearchWork) => void;
+  onDelete: (researchId: string) => void;
 }
 
 export function ResearchCard({
   research,
   onOpen,
   onDownload,
+  onEdit,
+  onDelete,
 }: ResearchCardProps) {
   const ext =
     (research.extension || research.fileType || "").toLowerCase() ||
@@ -45,6 +52,40 @@ export function ResearchCard({
 
   return (
     <Card className="flex flex-col h-full border border-default-200 shadow-none">
+      {/* Actions Menu */}
+      <div className="absolute top-2 right-2 z-10">
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              isIconOnly
+              size="sm"
+              variant="light"
+              className="text-default-400 hover:text-default-600"
+            >
+              <EllipsisVerticalIcon className="w-4 h-4" />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Research actions">
+            <DropdownItem
+              key="edit"
+              startContent={<PencilIcon className="w-4 h-4" />}
+              onPress={() => onEdit(research)}
+            >
+              Edit
+            </DropdownItem>
+            <DropdownItem
+              key="delete"
+              className="text-danger"
+              color="danger"
+              startContent={<TrashIcon className="w-4 h-4" />}
+              onPress={() => onDelete(research._id || research.id || "")}
+            >
+              Delete
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
+
       {/* Document Image/Preview */}
       <div className="flex items-center justify-center p-3 pb-0">
         <Image
@@ -65,7 +106,15 @@ export function ResearchCard({
           {research.fileName}
         </div>
         <div className="text-xs text-default-500 w-full text-center">
-          {new Date(research.createdAt || research.date).toLocaleString()}
+          {new Date(research.createdAt || research.date || "").toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          })}
         </div>
         <div className="flex items-center gap-2 mt-2">
           <Button
