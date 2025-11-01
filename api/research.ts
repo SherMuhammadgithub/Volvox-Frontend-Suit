@@ -76,7 +76,8 @@ export async function openOrDownloadFile(
     },
   });
 
-  const mimeType = response.headers["content-type"] || "application/octet-stream";
+  const mimeType =
+    response.headers["content-type"] || "application/octet-stream";
 
   // Use the provided fileName if available, otherwise fall back to file_id
   const downloadFileName = fileName || file_id;
@@ -125,7 +126,7 @@ export async function updateResearchWork({
     formData.append("file", file);
   }
 
-  const response = await axios.put(
+  const response = await axios.patch(
     `${API_BASE}/research/updateResearch/${researchId}`,
     formData,
     {
@@ -145,10 +146,13 @@ export async function deleteResearchWork({
   researchId: string;
   authToken: string;
 }) {
-  const response = await axios.delete(`${API_BASE}/research/deleteResearch/${researchId}`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
+  const response = await axios.delete(
+    `${API_BASE}/research/deleteResearch/${researchId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
   return response.data;
 }

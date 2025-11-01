@@ -36,15 +36,15 @@ export default function EditResearchModal({
   const [updating, setUpdating] = useState(false);
   const [showFileInput, setShowFileInput] = useState(false);
 
-  // Reset form when research changes
+  // Reset form when research changes or modal opens
   useEffect(() => {
-    if (research) {
+    if (research && isOpen) {
       setTitle(research.researchName || research.title || "");
       setFile(null);
       setPreviewUrl(null);
       setShowFileInput(false);
     }
-  }, [research]);
+  }, [research, isOpen]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] || null;

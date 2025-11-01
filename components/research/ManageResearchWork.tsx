@@ -7,7 +7,7 @@ import ResearchWorkFormModal from "./ResearchWorkFormModal";
 import EditResearchModal from "./EditResearchModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { ResearchWorkList } from "./ResearchWorkList";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useResearchStore } from "@/store/researchStore";
 import { useAuthStore } from "@/store/authStore";
 import { ResearchWork } from "@/types";
@@ -16,13 +16,17 @@ export default function ManageResearchWork() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedResearch, setSelectedResearch] = useState<ResearchWork | null>(null);
+  const [selectedResearch, setSelectedResearch] = useState<ResearchWork | null>(
+    null
+  );
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
     null,
   ]);
-
+  
+  // Use ref to track if initial fetch has been done
+  const hasInitialFetch = useRef(false);
 
   const addResearch = useResearchStore((s) => s.addResearch);
   const updateResearch = useResearchStore((s) => s.updateResearch);
@@ -35,7 +39,10 @@ export default function ManageResearchWork() {
 
   // fecth research works on initial load
   React.useEffect(() => {
-    if (authToken) {
+    console.log('🔍 ManageResearchWork useEffect triggered, authToken:', authToken ? 'exists' : 'null', 'hasInitialFetch:', hasInitialFetch.current);
+    if (authToken && !hasInitialFetch.current) {
+      console.log('📞 Calling handleSearch from useEffect (first time only)');
+      hasInitialFetch.current = true;
       handleSearch();
     }
     // eslint-disable-next-line
@@ -43,6 +50,7 @@ export default function ManageResearchWork() {
 
   // Only fetch on explicit search
   const handleSearch = () => {
+    console.log('📞 handleSearch called');
     if (!authToken) return;
     const start = dateRange[0]?.toISOString();
     const end = dateRange[1]?.toISOString();
@@ -72,13 +80,8 @@ export default function ManageResearchWork() {
 
   const handleAddResearchWork = async (title: string, file: File | null) => {
     if (!file || !authToken) return;
-    try {
-      await addResearch({ researchName: title, file, authToken });
-      // Refetch after adding
-      handleSearch();
-    } catch (e) {
-      // error handled in store
-    }
+    await addResearch({ researchName: title, file, authToken });
+    // Store will update the array automatically, no need to refetch
   };
 
   const handleEditResearch = (research: ResearchWork) => {
@@ -86,34 +89,37 @@ export default function ManageResearchWork() {
     setEditModalOpen(true);
   };
 
-  const handleUpdateResearch = async (researchId: string, title: string, file?: File) => {
+  const handleUpdateResearch = async (
+    researchId: string,
+    title: string,
+    file?: File
+  ) => {
     if (!authToken) return;
-    try {
-      // Mock update for testing (when no real API)
-      if (researchId.startsWith('mock-')) {
-        console.log('🔄 Mock Update Research:', { researchId, title, fileName: file?.name });
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // Mock success - in real app this would update the backend
-      } else {
-        await updateResearch({
-          researchId,
-          researchName: title,
-          file,
-          authToken,
-        });
-      }
-      // Refetch after updating
-      handleSearch();
-      setEditModalOpen(false);
-      setSelectedResearch(null);
-    } catch (error) {
-      throw error; // Let the modal handle the error
+    // Mock update for testing (when no real API)
+    if (researchId.startsWith("mock-")) {
+      console.log("🔄 Mock Update Research:", {
+        researchId,
+        title,
+        fileName: file?.name,
+      });
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Mock success - in real app this would update the backend
+    } else {
+      await updateResearch({
+        researchId,
+        researchName: title,
+        file,
+        authToken,
+      });
     }
+    // Store will update the array automatically, no need to refetch
+    setEditModalOpen(false);
+    setSelectedResearch(null);
   };
 
   const handleDeleteResearch = (researchId: string) => {
-    const research = researchWorks.find(r => (r._id || r.id) === researchId);
+    const research = researchWorks.find((r) => (r._id || r.id) === researchId);
     if (research) {
       setSelectedResearch(research);
       setDeleteModalOpen(true);
@@ -122,28 +128,24 @@ export default function ManageResearchWork() {
 
   const handleConfirmDelete = async () => {
     if (!selectedResearch || !authToken) return;
-    try {
-      const researchId = selectedResearch._id || selectedResearch.id || "";
+    const researchId = selectedResearch._id || selectedResearch.id || "";
 
-      // Mock delete for testing (when no real API)
-      if (researchId.startsWith('mock-')) {
-        console.log('🗑️ Mock Delete Research:', { researchId, name: selectedResearch.researchName });
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // Mock success - in real app this would delete from backend
-      } else {
-        await deleteResearch({
-          researchId,
-          authToken,
-        });
-      }
-      // Refetch after deleting
-      handleSearch();
-      setDeleteModalOpen(false);
-      setSelectedResearch(null);
-    } catch (error) {
-      throw error; // Let the modal handle the error
+    // Mock delete for testing (when no real API)
+    if (researchId.startsWith("mock-")) {
+      console.log("🗑️ Mock Delete Research:", {
+        researchId,
+        name: selectedResearch.researchName,
+      });
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Mock success - in real app this would delete from backend
+    } else {
+      await deleteResearch({
+        researchId,
+        authToken,
+      });
     }
+    // Store will update the array automatically, no need to refetch
   };
 
   return (
@@ -191,7 +193,9 @@ export default function ManageResearchWork() {
           <DeleteConfirmModal
             isOpen={deleteModalOpen}
             onOpenChange={setDeleteModalOpen}
-            researchName={selectedResearch?.researchName || selectedResearch?.title || ""}
+            researchName={
+              selectedResearch?.researchName || selectedResearch?.title || ""
+            }
             onConfirm={handleConfirmDelete}
             loading={loading}
           />

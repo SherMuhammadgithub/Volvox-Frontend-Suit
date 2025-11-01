@@ -26,21 +26,13 @@ export default function DeleteConfirmModal({
   loading = false,
 }: DeleteConfirmModalProps) {
   const handleConfirm = async () => {
-    try {
-      await onConfirm();
-      addToast({
-        title: "Success",
-        description: "Research work deleted successfully.",
-        color: "success",
-      });
-      onOpenChange(false);
-    } catch (err: any) {
-      addToast({
-        title: "Error",
-        description: err?.response?.data?.detail || "Failed to delete research work.",
-        color: "danger",
-      });
-    }
+    await onConfirm();
+    addToast({
+      title: "Success",
+      description: "Research work deleted successfully.",
+      color: "success",
+    });
+    onOpenChange(false);
   };
 
   return (

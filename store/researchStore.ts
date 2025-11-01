@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { addResearchWork, getResearchWorks, updateResearchWork, deleteResearchWork } from "@/api/research";
+import {
+  addResearchWork,
+  getResearchWorks,
+  updateResearchWork,
+  deleteResearchWork,
+} from "@/api/research";
 import { addToast } from "@heroui/toast";
 import { ResearchWork } from "@/types";
 
@@ -40,7 +45,11 @@ export const useResearchStore = create<ResearchState>((set) => ({
     set({ loading: true, error: null });
     try {
       const data = await addResearchWork({ researchName, file, authToken });
-      set({ loading: false });
+      // Add the new research work to the beginning of the array
+      set((state) => ({
+        researchWorks: [data, ...state.researchWorks],
+        loading: false,
+      }));
       return data;
     } catch (error: any) {
       set({
@@ -56,8 +65,19 @@ export const useResearchStore = create<ResearchState>((set) => ({
   async updateResearch({ researchId, researchName, file, authToken }) {
     set({ loading: true, error: null });
     try {
-      const data = await updateResearchWork({ researchId, researchName, file, authToken });
-      set({ loading: false });
+      const data = await updateResearchWork({
+        researchId,
+        researchName,
+        file,
+        authToken,
+      });
+      // Update the research work in the array
+      set((state) => ({
+        researchWorks: state.researchWorks.map((r) =>
+          (r._id || r.id) === researchId ? { ...r, ...data } : r
+        ),
+        loading: false,
+      }));
       return data;
     } catch (error: any) {
       set({
@@ -74,7 +94,13 @@ export const useResearchStore = create<ResearchState>((set) => ({
     set({ loading: true, error: null });
     try {
       const data = await deleteResearchWork({ researchId, authToken });
-      set({ loading: false });
+      // Remove the research work from the array
+      set((state) => ({
+        researchWorks: state.researchWorks.filter(
+          (r) => (r._id || r.id) !== researchId
+        ),
+        loading: false,
+      }));
       return data;
     } catch (error: any) {
       set({
@@ -95,6 +121,13 @@ export const useResearchStore = create<ResearchState>((set) => ({
     end,
     authToken,
   }) {
+    console.log("🌐 API Call: fetchResearchWorks", {
+      limit,
+      offset,
+      search,
+      start,
+      end,
+    });
     set({ loading: true, error: null });
     try {
       const data = await getResearchWorks({
@@ -105,8 +138,10 @@ export const useResearchStore = create<ResearchState>((set) => ({
         end,
         authToken,
       });
+      console.log("✅ fetchResearchWorks success, items:", data.length);
       set({ researchWorks: data, loading: false });
     } catch (error: any) {
+      console.error("❌ fetchResearchWorks error:", error);
       set({
         loading: false,
         error:
