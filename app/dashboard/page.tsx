@@ -58,11 +58,13 @@ export default function DashboardPage() {
     try {
       const response = await askQuestion({
         question: message,
+        chatId: currentChat?.chat_id, // Pass existing chat_id if available
         authToken,
       });
 
       // Update URL without navigation to avoid skeleton loading
-      if (response.chat_id) {
+      // Only update URL on first message (when currentChat didn't have a chat_id)
+      if (response.chat_id && !currentChat?.chat_id) {
         window.history.replaceState(
           null,
           "",
