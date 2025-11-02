@@ -38,7 +38,7 @@ export async function askQuestion({
   const params = new URLSearchParams();
   params.append("question", question);
   if (chatId) params.append("chat_id", chatId);
-  if (researchId) params.append("research_id", researchId);
+  if (researchId) params.append("document_id", researchId);
 
   const response = await axios.post(
     `${API_BASE}/chat/ask?${params.toString()}`,

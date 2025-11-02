@@ -60,15 +60,14 @@ export default function ChatPage() {
     );
   }
 
-  const handleSendMessage = async (message: string, file?: File) => {
+  const handleSendMessage = async (message: string, researchId?: string) => {
     if (!authToken) return;
 
-    // TODO: Handle file upload to get researchId
-    // For now, we'll just send the message
     try {
       await askQuestion({
         question: message,
         chatId: chatId,
+        researchId, // Pass selected research_id
         authToken,
       });
     } catch (error) {

@@ -6,7 +6,8 @@ import { Avatar } from "@heroui/avatar";
 import { MessageBubble } from "./MessageBubble";
 import { ChatMessage } from "@/api/chat";
 import { Spinner } from "@heroui/spinner";
-import { SparklesIcon, PaperClipIcon } from "@heroicons/react/24/outline";
+import { SparklesIcon } from "@heroicons/react/24/outline";
+import { DocumentTextIcon } from "@heroicons/react/24/solid";
 
 interface ChatMessagesProps {
   messages: ChatMessage[];
@@ -55,13 +56,13 @@ export function ChatMessages({
             </div>
 
             <div className="flex items-start gap-3">
-              <PaperClipIcon className="w-5 h-5 text-default-400 dark:text-default-500 flex-shrink-0 mt-0.5" />
+              <DocumentTextIcon className="w-5 h-5 text-default-400 dark:text-default-500 flex-shrink-0 mt-0.5" />
               <div className="text-left">
                 <p className="text-sm font-semibold text-default-700 dark:text-default-300">
-                  Attach Documents
+                  Attach Research Work
                 </p>
                 <p className="text-xs text-default-500 dark:text-default-400">
-                  Include research files for better answers
+                  Include research works for better answers
                 </p>
               </div>
             </div>

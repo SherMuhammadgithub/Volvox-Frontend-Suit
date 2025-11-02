@@ -18,25 +18,25 @@ interface ChatState {
   currentChat: ChatDetail | null;
   currentChatId: string | null;
   deletingChatId: string | null;
-  
+
   askQuestion: (params: {
     question: string;
     chatId?: string;
     researchId?: string;
     authToken: string;
   }) => Promise<{ response: string; chat_id: string; chat_title: string }>;
-  
+
   fetchChatHistory: (params: { authToken: string }) => Promise<void>;
-  
+
   fetchChatById: (params: {
     chatId: string;
     authToken: string;
   }) => Promise<void>;
-  
+
   deleteChat: (params: { chatId: string; authToken: string }) => Promise<void>;
-  
+
   setCurrentChatId: (chatId: string | null) => void;
-  
+
   startNewChat: () => void;
 }
 
@@ -158,7 +158,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
       set((state) => ({
         chats: state.chats.filter((c) => c.chat_id !== chatId),
         currentChat: state.currentChatId === chatId ? null : state.currentChat,
-        currentChatId: state.currentChatId === chatId ? null : state.currentChatId,
+        currentChatId:
+          state.currentChatId === chatId ? null : state.currentChatId,
         deletingChatId: null,
       }));
       addToast({

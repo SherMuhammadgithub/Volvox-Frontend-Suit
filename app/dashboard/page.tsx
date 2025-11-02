@@ -50,15 +50,14 @@ export default function DashboardPage() {
     );
   }
 
-  const handleSendMessage = async (message: string, file?: File) => {
+  const handleSendMessage = async (message: string, researchId?: string) => {
     if (!authToken) return;
 
-    // TODO: Handle file upload to get researchId
-    // For now, we'll just send the message
     try {
       const response = await askQuestion({
         question: message,
         chatId: currentChat?.chat_id, // Pass existing chat_id if available
+        researchId, // Pass selected research_id
         authToken,
       });
 
