@@ -265,28 +265,6 @@ export default function DashboardLayout({
       </div>
       {/* Mobile sidebar using HeroUI Drawer */}
       <div className="md:hidden">
-        <Button
-          className="fixed top-3 left-4 z-50"
-          isIconOnly
-          variant="flat"
-          color="primary"
-          aria-label="Open navigation"
-          onPress={() => setMobileOpen(true)}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </Button>
         <Drawer
           isOpen={mobileOpen}
           onOpenChange={setMobileOpen}
@@ -309,7 +287,43 @@ export default function DashboardLayout({
         </Drawer>
       </div>
       {/* Main content */}
-      <main className="flex-1  overflow-y-auto mt-14">{children}</main>
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {/* Mobile header with hamburger */}
+        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white dark:bg-default-100 border-b border-default-200">
+          <Button
+            isIconOnly
+            variant="light"
+            size="sm"
+            aria-label="Open navigation"
+            onPress={() => setMobileOpen(true)}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </Button>
+          <h1 className="text-lg font-semibold">
+            {pathname === "/dashboard"
+              ? "Chat"
+              : pathname.includes("/research")
+                ? "Research"
+                : pathname.includes("/chat/")
+                  ? "Chat"
+                  : "Dashboard"}
+          </h1>
+        </div>
+        {/* Page content */}
+        <div className="flex-1 overflow-y-auto md:mt-4">{children}</div>
+      </main>
 
       {/* Delete Confirmation Modal */}
       <Modal isOpen={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
