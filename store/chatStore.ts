@@ -189,6 +189,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   startNewChat: () => {
-    set({ currentChatId: null, currentChat: null });
+    set({ currentChatId: null, currentChat: null, loading: false });
   },
 }));

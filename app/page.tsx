@@ -13,7 +13,7 @@ export default function Home() {
     if (typeof window !== "undefined") {
       let token = null;
       try {
-        const persisted = localStorage.getItem("auth-storage");
+        const persisted = sessionStorage.getItem("auth-storage");
         if (persisted) {
           const parsed = JSON.parse(persisted);
           token = parsed.state?.token || parsed.token || null;
@@ -23,7 +23,7 @@ export default function Home() {
         router.replace("/dashboard");
       } else {
         router.replace("/auth/login");
-      }
+      } 
     }
   }, [router]);
 

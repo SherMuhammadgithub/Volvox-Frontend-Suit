@@ -77,19 +77,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col h-full max-w-7xl mx-auto w-full">
-      {/* Chat Header */}
-      <Card className="mx-2 sm:mx-4 mt-2 sm:mt-4 rounded-t-lg border-b border-default-200">
-        <CardHeader className="flex flex-row items-center justify-between gap-3 p-4 sm:p-6">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl sm:text-2xl font-bold text-default-900">
-              Chat
-            </h1>
-          </div>
-          <div className="text-right">
-            <p className="text-sm font-medium text-default-600">New Chat</p>
-          </div>
-        </CardHeader>
-      </Card>
+    
 
       {/* Chat Messages */}
       <ChatMessages

@@ -70,9 +70,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        // Clear localStorage and remove token from localStorage (via Zustand persist)
+        // Clear sessionStorage and remove token from sessionStorage (via Zustand persist)
         if (typeof window !== "undefined") {
-          localStorage.removeItem("auth-token");
+          sessionStorage.removeItem("auth-token");
+          sessionStorage.removeItem("auth-storage");
         }
         set({
           token: null,
@@ -87,7 +88,7 @@ export const useAuthStore = create<AuthState>()(
           let token = null;
           let user = null;
           try {
-            const persisted = localStorage.getItem("auth-storage");
+            const persisted = sessionStorage.getItem("auth-storage");
             if (persisted) {
               const parsed = JSON.parse(persisted);
               user = parsed.state?.user || parsed.user || null;
@@ -107,8 +108,27 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      // Persist both user and token for persistent login
+      // Persist both user and token in sessionStorage (clears on browser close)
       partialize: (state) => ({ user: state.user, token: state.token }),
+      storage: {
+        getItem: (name) => {
+          if (typeof window !== "undefined") {
+            const item = sessionStorage.getItem(name);
+            return item ? JSON.parse(item) : null;
+          }
+          return null;
+        },
+        setItem: (name, value) => {
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem(name, JSON.stringify(value));
+          }
+        },
+        removeItem: (name) => {
+          if (typeof window !== "undefined") {
+            sessionStorage.removeItem(name);
+          }
+        },
+      },
     }
   )
 );
