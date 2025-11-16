@@ -38,7 +38,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
 
   // Filter research works based on search query
   const filteredResearchWorks = researchWorks.filter((research) =>
-    research.researchName.toLowerCase().includes(searchQuery.toLowerCase())
+    research.researchName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleSend = () => {
@@ -102,21 +102,21 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         </Card>
       )}
 
-      <div className="flex flex-col gap-3 bg-default-100/50 dark:bg-default-100/40 rounded-2xl px-4 py-4 border border-default-300/40">
+      <div className="flex flex-col gap-2 bg-default-100/50 dark:bg-default-100/40 rounded-2xl px-4 py-3 border border-default-300/40">
         <Textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask anything"
           disabled={disabled}
-          minRows={3}
-          maxRows={5}
+          minRows={2}
+          maxRows={4}
           classNames={{
             base: "w-full",
             input:
-              "text-default-700 placeholder:text-default-400 bg-transparent text-sm font-normal resize-none p-4",
+              "text-default-700 placeholder:text-default-400 bg-transparent text-sm font-normal resize-none p-3",
             innerWrapper: "bg-transparent",
-            inputWrapper: "bg-transparent shadow-none p-0 h-auto",
+            inputWrapper: "bg-transparent shadow-none p-0 h-auto min-h-[40px]",
           }}
         />
 
@@ -173,7 +173,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
                   ) : (
                     <>
                       {/* Search Input */}
-                      <div className="p-3 border-b border-default-200 ">
+                      <div className="p-3 border-b border-default-200">
                         <Input
                           size="sm"
                           placeholder="Search research works..."
@@ -220,10 +220,10 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
                                   onPress={() =>
                                     handleSelectResearch(
                                       research._id || research.id || "",
-                                      research.researchName
+                                      research.researchName,
                                     )
                                   }
-                                  className={`${
+                                  className={`w-full ${
                                     isSelected
                                       ? "bg-default-900 dark:bg-default-100 border-1 border-default-900 dark:border-default-200"
                                       : "bg-default-100 dark:bg-default-50/5 hover:bg-default-200 dark:hover:bg-default-100/10"
@@ -254,6 +254,14 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
                                               ? "text-white dark:text-default-900"
                                               : "text-default-700 dark:text-default-500"
                                           }`}
+                                          title={research.researchName}
+                                          style={{
+                                            maxWidth: "180px",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                            display: "block",
+                                          }}
                                         >
                                           {research.researchName}
                                         </p>
@@ -265,7 +273,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
                                           }`}
                                         >
                                           {new Date(
-                                            research.createdAt
+                                            research.createdAt,
                                           ).toLocaleDateString("en-US", {
                                             month: "short",
                                             day: "numeric",

@@ -28,16 +28,18 @@ export function ChatMessages({
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, loading]);
 
   if (messages.length === 0 && !loading) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="text-center max-w-md">
-          <div className="flex justify-center mb-6">
-            <SparklesIcon className="w-16 h-16 text-default-400 dark:text-default-500" />
+        <div className=" max-w-md">
+          <div className="flex justify-start items-center gap-2">
+            <div className="flex">
+              <SparklesIcon className="w-12 h-12 text-default-400 dark:text-default-500" />
+            </div>
+            <h2 className="text-3xl font-bold mb-2">Start a New Chat</h2>
           </div>
-          <h2 className="text-3xl font-bold mb-2">Start a New Chat</h2>
           <p className="text-default-600 dark:text-default-400 mb-8">
             Ask me anything! I'm powered by AI and ready to help.
           </p>

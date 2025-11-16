@@ -113,7 +113,7 @@ export default function SignupPage() {
       const { access_token, user } = await signupApi(
         formData.fullName,
         formData.email,
-        formData.password
+        formData.password,
       );
       login(access_token, user);
       addToast({

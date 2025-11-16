@@ -23,7 +23,15 @@ import { Divider } from "@heroui/divider";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/popover";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
-import { TrashIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import {
+  TrashIcon,
+  ChevronDownIcon,
+  ChatBubbleLeftRightIcon,
+  DocumentMagnifyingGlassIcon,
+  Cog6ToothIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
+import ProtectedRoute from "@/components/protectedRoute";
 
 export default function DashboardLayout({
   children,
@@ -59,15 +67,21 @@ export default function DashboardLayout({
   }, [authToken, fetchChatHistory]);
 
   const navLinks = [
-    { label: "New Chat", href: "/dashboard" },
-    { label: "Manage Research Work", href: "/dashboard/research" },
-    { label: "Settings", href: "/dashboard/settings" },
-  ];
-  const dummyChats = [
-    "Welcome to Volvox!",
-    "Your recent activity",
-    "Project updates",
-    "Team chat",
+    {
+      label: "New Chat",
+      href: "/dashboard",
+      icon: ChatBubbleLeftRightIcon,
+    },
+    {
+      label: "Manage Research Work",
+      href: "/dashboard/research",
+      icon: DocumentMagnifyingGlassIcon,
+    },
+    {
+      label: "Settings",
+      href: "/dashboard/settings",
+      icon: Cog6ToothIcon,
+    },
   ];
 
   function handleLogout() {
@@ -106,7 +120,12 @@ export default function DashboardLayout({
     return (
       <nav className="flex flex-col h-full w-64 md:border-r md:border-default-200 p-4">
         <div className="mb-6 flex items-center gap-2">
-          <Avatar size="md" name={user?.fullName || "User"} />
+          <Avatar
+            size="sm"
+            src="/images/ai.png"
+            alt="AI Assistant"
+            className="flex-shrink-0"
+          />
           <span className="font-semibold text-lg truncate">Volvox</span>
         </div>
         <div className="mb-4">
@@ -136,14 +155,16 @@ export default function DashboardLayout({
                   if (onNav) onNav();
                 }}
               >
+                <link.icon className="w-5 h-5 mr-2 text-default-500" />
                 {link.label}
               </Button>
             );
           })}
         </div>
         <Divider className="my-2" />
-        <div className="sticky top-0 bg-white dark:bg-default-100 z-10 mb-2">
-          <div className="text-xs font-semibold text-default-400">
+        <div className="sticky top-0 z-10 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold text-default-400">
+            <ArrowPathIcon className="w-4 h-4" />
             Recent Chats
           </div>
         </div>
@@ -243,7 +264,7 @@ export default function DashboardLayout({
               </Button>
               <Divider className="my-1" />
               <Button
-                className="w-full justify-start px-4 py-2 rounded-none font-normal text-danger"
+                className="w-full justify-start px-4 py-2 rounded-b-xl rounded-t-none font-normal text-danger"
                 variant="light"
                 color="danger"
                 onPress={handleLogout}
@@ -322,7 +343,9 @@ export default function DashboardLayout({
           </h1>
         </div>
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto md:mt-4">{children}</div>
+        <div className="flex-1 overflow-y-auto md:mt-4">
+          <ProtectedRoute>{children}</ProtectedRoute>
+        </div>
       </main>
 
       {/* Delete Confirmation Modal */}

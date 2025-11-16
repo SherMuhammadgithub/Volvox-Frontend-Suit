@@ -67,7 +67,7 @@ export default function DashboardPage() {
         window.history.replaceState(
           null,
           "",
-          `/dashboard/chat/${response.chat_id}`
+          `/dashboard/chat/${response.chat_id}`,
         );
       }
     } catch (error) {
@@ -77,8 +77,6 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col h-full max-w-7xl mx-auto w-full">
-    
-
       {/* Chat Messages */}
       <ChatMessages
         messages={currentChat?.messages || []}
