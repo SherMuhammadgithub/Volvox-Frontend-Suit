@@ -6,6 +6,7 @@ export interface ChatMessage {
   question: string;
   response: string;
   research_id?: string | null;
+  isNew?: boolean;
 }
 
 export interface Chat {

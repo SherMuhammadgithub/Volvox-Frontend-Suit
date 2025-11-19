@@ -77,13 +77,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
         question,
         response: data.response,
         research_id: researchId || null,
+        isNew: true,
       };
 
       set((state) => ({
         currentChat: state.currentChat
           ? {
               ...state.currentChat,
-              messages: [...state.currentChat.messages, newMessage],
+              messages: [
+                ...state.currentChat.messages.map((msg) => ({ ...msg, isNew: false })),
+                newMessage,
+              ],
             }
           : {
               chat_id: data.chat_id,

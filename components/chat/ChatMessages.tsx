@@ -74,6 +74,10 @@ export function ChatMessages({
     );
   }
 
+  // Only show typewriter for the last message if it was just sent (not on history load)
+  const isTypewriterActive =
+    messages.length > 0 && messages[messages.length - 1].isNew;
+
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide">
       <style>{`
@@ -86,7 +90,12 @@ export function ChatMessages({
         }
       `}</style>
       {messages.map((message, index) => (
-        <MessageBubble key={index} message={message} userEmail={userEmail} />
+        <MessageBubble
+          key={index}
+          message={message}
+          userEmail={userEmail}
+          typewriter={index === messages.length - 1 && isTypewriterActive}
+        />
       ))}
       {loading && (
         <div className="flex items-start gap-3">
