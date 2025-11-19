@@ -11,6 +11,10 @@ import React, { useState, useRef } from "react";
 import { useResearchStore } from "@/store/researchStore";
 import { useAuthStore } from "@/store/authStore";
 import { ResearchWork } from "@/types";
+import {
+  DocumentChartBarIcon,
+  DocumentMagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
 export default function ManageResearchWork() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -24,7 +28,7 @@ export default function ManageResearchWork() {
     null,
     null,
   ]);
-  
+
   // Use ref to track if initial fetch has been done
   const hasInitialFetch = useRef(false);
 
@@ -39,9 +43,14 @@ export default function ManageResearchWork() {
 
   // fecth research works on initial load
   React.useEffect(() => {
-    console.log('🔍 ManageResearchWork useEffect triggered, authToken:', authToken ? 'exists' : 'null', 'hasInitialFetch:', hasInitialFetch.current);
+    console.log(
+      "🔍 ManageResearchWork useEffect triggered, authToken:",
+      authToken ? "exists" : "null",
+      "hasInitialFetch:",
+      hasInitialFetch.current
+    );
     if (authToken && !hasInitialFetch.current) {
-      console.log('📞 Calling handleSearch from useEffect (first time only)');
+      console.log("📞 Calling handleSearch from useEffect (first time only)");
       hasInitialFetch.current = true;
       handleSearch();
     }
@@ -50,7 +59,7 @@ export default function ManageResearchWork() {
 
   // Only fetch on explicit search
   const handleSearch = () => {
-    console.log('📞 handleSearch called');
+    console.log("📞 handleSearch called");
     if (!authToken) return;
     const start = dateRange[0]?.toISOString();
     const end = dateRange[1]?.toISOString();
@@ -150,70 +159,64 @@ export default function ManageResearchWork() {
 
   return (
     <div className="max-w-7xl mx-auto p-2 sm:p-4 space-y-6">
-      <Card className="overflow-x-auto">
-        <CardHeader className="flex flex-col items-center sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-t-lg border-b border-default-200">
-          <div className="flex-1 w-full">
-            <h1 className="text-xl sm:text-2xl font-bold truncate text-center sm:text-left w-full sm:w-auto">
-              Your Research Work
-            </h1>
-            <p className="text-default-500 text-sm mt-2 max-w-2xl text-center sm:text-left mx-auto sm:mx-0">
-              Here you can add, search, and manage all your research documents.
-              Use the filters to quickly find research work by title or date,
-              and upload new documents to keep your research organized.
-            </p>
-          </div>
-          <Button
-            color="primary"
-            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
-            onPress={() => setModalOpen(true)}
-            aria-label="Add Research Work"
-          >
-            <PlusIcon className="w-5 h-5" />
-            <span className="inline">Add Research Work</span>
-          </Button>
-        </CardHeader>
-        <div className="p-2 sm:p-4 space-y-6 overflow-x-auto">
-          <ResearchWorkFormModal
-            isOpen={modalOpen}
-            onOpenChange={setModalOpen}
-            onSubmit={handleAddResearchWork}
-            loading={loading}
-            error={error}
-          />
-
-          <EditResearchModal
-            isOpen={editModalOpen}
-            onOpenChange={setEditModalOpen}
-            research={selectedResearch}
-            onSubmit={handleUpdateResearch}
-            loading={loading}
-            error={error}
-          />
-
-          <DeleteConfirmModal
-            isOpen={deleteModalOpen}
-            onOpenChange={setDeleteModalOpen}
-            researchName={
-              selectedResearch?.researchName || selectedResearch?.title || ""
-            }
-            onConfirm={handleConfirmDelete}
-            loading={loading}
-          />
-
-          <ResearchWorkList
-            researchWorks={researchWorks}
-            search={search}
-            setSearch={setSearch}
-            dateRange={dateRange}
-            setDateRange={setDateRange}
-            loading={loading}
-            onSearch={handleSearch}
-            onClear={handleClear}
-            onEdit={handleEditResearch}
-            onDelete={handleDeleteResearch}
-          />
+      <div className="flex flex-col items-center sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
+        <div className="flex-1 w-full">
+          <h1 className="flex items-center gap-2 text-xl sm:text-2xl font-bold truncate text-center sm:text-left w-full sm:w-auto">
+            <DocumentChartBarIcon className="w-6 h-6" />
+            Manage Research Work
+          </h1>
         </div>
-      </Card>
+        <Button
+          color="primary"
+          className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+          onPress={() => setModalOpen(true)}
+          aria-label="Add Research Work"
+        >
+          <PlusIcon className="w-5 h-5" />
+          <span className="inline">Add Research Work</span>
+        </Button>
+      </div>
+      <div className="p-2 sm:p-4 space-y-6 overflow-x-auto">
+        <ResearchWorkFormModal
+          isOpen={modalOpen}
+          onOpenChange={setModalOpen}
+          onSubmit={handleAddResearchWork}
+          loading={loading}
+          error={error}
+        />
+
+        <EditResearchModal
+          isOpen={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          research={selectedResearch}
+          onSubmit={handleUpdateResearch}
+          loading={loading}
+          error={error}
+        />
+
+        <DeleteConfirmModal
+          isOpen={deleteModalOpen}
+          onOpenChange={setDeleteModalOpen}
+          researchName={
+            selectedResearch?.researchName || selectedResearch?.title || ""
+          }
+          onConfirm={handleConfirmDelete}
+          loading={loading}
+        />
+
+        <ResearchWorkList
+          researchWorks={researchWorks}
+          search={search}
+          setSearch={setSearch}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+          loading={loading}
+          onSearch={handleSearch}
+          onClear={handleClear}
+          onEdit={handleEditResearch}
+          onDelete={handleDeleteResearch}
+        />
+      </div>
     </div>
   );
 }

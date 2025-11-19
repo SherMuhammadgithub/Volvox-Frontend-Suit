@@ -10,6 +10,8 @@ import { DatePicker } from "@heroui/react";
 import { Divider } from "@heroui/divider";
 import { useAuthStore } from "@/store/authStore";
 import { ResearchWork } from "@/types";
+import { SearchIcon } from "../icons";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface ResearchWorkListProps {
   researchWorks?: ResearchWork[];
@@ -61,7 +63,7 @@ export function ResearchWorkList({
     //   createdAt: "2024-10-15T10:00:00Z"
     // },
     // {
-    //   _id: "mock-2", 
+    //   _id: "mock-2",
     //   researchName: "Quantum Computing Analysis",
     //   fileName: "quantum-computing.docx",
     //   file_id: "file-2",
@@ -71,7 +73,7 @@ export function ResearchWorkList({
     // {
     //   _id: "mock-3",
     //   researchName: "Machine Learning in Finance",
-    //   fileName: "ml-finance-report.pdf", 
+    //   fileName: "ml-finance-report.pdf",
     //   file_id: "file-3",
     //   extension: "pdf",
     //   createdAt: "2024-10-25T09:15:00Z"
@@ -80,7 +82,7 @@ export function ResearchWorkList({
     //   _id: "mock-4",
     //   researchName: "Blockchain Technology Study",
     //   fileName: "blockchain-research.pptx",
-    //   file_id: "file-4", 
+    //   file_id: "file-4",
     //   extension: "pptx",
     //   createdAt: "2024-10-28T16:45:00Z"
     // },
@@ -89,32 +91,35 @@ export function ResearchWorkList({
     //   researchName: "Climate Change Data Analysis",
     //   fileName: "climate-data.xlsx",
     //   file_id: "file-5",
-    //   extension: "xlsx", 
+    //   extension: "xlsx",
     //   createdAt: "2024-10-30T11:20:00Z"
     // }
   ];
 
   // Use mock data if no real research works are available
-  const dataToUse = researchWorks.length > 0 ? researchWorks : mockResearchWorks;
+  const dataToUse =
+    researchWorks.length > 0 ? researchWorks : mockResearchWorks;
 
-  const filtered = dataToUse.filter(
-    (r) => {
-      const researchDate = new Date(r.createdAt || r.date || "");
-      return (
-        (r.researchName || r.title || "")
-          .toLowerCase()
-          .includes(search.toLowerCase()) &&
-        (!fromDate || researchDate >= fromDate) &&
-        (!toDate || researchDate <= toDate)
-      );
-    }
-  );
+  const filtered = dataToUse.filter((r) => {
+    const researchDate = new Date(r.createdAt || r.date || "");
+    return (
+      (r.researchName || r.title || "")
+        .toLowerCase()
+        .includes(search.toLowerCase()) &&
+      (!fromDate || researchDate >= fromDate) &&
+      (!toDate || researchDate <= toDate)
+    );
+  });
 
   // download file function
-   async function handleDownload(fileId: string, fileName:string,mode: "open" | "download") {
+  async function handleDownload(
+    fileId: string,
+    fileName: string,
+    mode: "open" | "download"
+  ) {
     try {
       const authToken = useAuthStore.getState().getAuthToken();
-      await openOrDownloadFile(fileId, authToken || "", mode,fileName);
+      await openOrDownloadFile(fileId, authToken || "", mode, fileName);
     } catch (error) {
       console.error("Error downloading file:", error);
     }
@@ -143,11 +148,22 @@ export function ResearchWorkList({
           onChange={(date) => setDateRange([dateRange[0], toJSDate(date)])}
           className="md:w-1/4"
         />
-        <Button color="primary" onPress={onSearch} className="md:ml-2">
-          Search
+        <Button
+          color="primary"
+          onPress={onSearch}
+          className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+        >
+          <SearchIcon className="w-5 h-5" />
+          <span className="inline">Search</span>
         </Button>
-        <Button color="secondary" variant="light" onPress={onClear}>
-          Clear
+        <Button
+          color="secondary"
+          variant="light"
+          onPress={onClear}
+          className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+        >
+          <XMarkIcon className="w-5 h-5" />
+          <span className="inline">Clear</span>
         </Button>
       </div>
 
@@ -180,8 +196,12 @@ export function ResearchWorkList({
             <ResearchCard
               key={r._id || r.id}
               research={r}
-              onOpen={(fileId) => handleDownload(fileId, r.fileName || "document", "open")}
-              onDownload={(fileId) => handleDownload(fileId, r.fileName || "document", "download")}
+              onOpen={(fileId) =>
+                handleDownload(fileId, r.fileName || "document", "open")
+              }
+              onDownload={(fileId) =>
+                handleDownload(fileId, r.fileName || "document", "download")
+              }
               onEdit={onEdit}
               onDelete={onDelete}
             />

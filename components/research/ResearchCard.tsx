@@ -1,7 +1,20 @@
 import { Card, CardBody } from "@heroui/card";
 import { Button } from "@heroui/button";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
-import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@heroui/dropdown";
+import {
+  ArrowDownCircleIcon,
+  BookOpenIcon,
+  EllipsisHorizontalCircleIcon,
+  EllipsisVerticalIcon,
+  FolderOpenIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { ResearchWork } from "@/types";
 
@@ -56,13 +69,8 @@ export function ResearchCard({
       <div className="absolute top-2 right-2 z-10">
         <Dropdown>
           <DropdownTrigger>
-            <Button
-              isIconOnly
-              size="sm"
-              variant="light"
-              className="text-default-400 hover:text-default-600"
-            >
-              <EllipsisVerticalIcon className="w-4 h-4" />
+            <Button isIconOnly size="sm" variant="light" className="">
+              <EllipsisHorizontalCircleIcon className="w-5 h-5" />
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Research actions">
@@ -106,15 +114,18 @@ export function ResearchCard({
           {research.fileName}
         </div>
         <div className="text-xs text-default-500 w-full text-center">
-          {new Date(research.createdAt || research.date || "").toLocaleString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-          })}
+          {new Date(research.createdAt || research.date || "").toLocaleString(
+            "en-US",
+            {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            }
+          )}
         </div>
         <div className="flex items-center gap-2 mt-2">
           <Button
@@ -123,16 +134,22 @@ export function ResearchCard({
             size="sm"
             onPress={() => research.file_id && onOpen(research.file_id)}
             isDisabled={!research.file_id}
+            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
           >
+            {/*  open icon */}
+            <FolderOpenIcon className="w-4 h-4" />
             Open
           </Button>
           <Button
             color="secondary"
             variant="flat"
             size="sm"
+            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
             onPress={() => research.file_id && onDownload(research.file_id)}
             isDisabled={!research.file_id}
           >
+            {/* download icon */}
+            <ArrowDownCircleIcon className="w-4 h-4" />
             Download
           </Button>
         </div>
