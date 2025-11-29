@@ -38,7 +38,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
 
   // Filter research works based on search query
   const filteredResearchWorks = researchWorks.filter((research) =>
-    research.researchName.toLowerCase().includes(searchQuery.toLowerCase()),
+    research.researchName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSend = () => {
@@ -220,7 +220,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
                                   onPress={() =>
                                     handleSelectResearch(
                                       research._id || research.id || "",
-                                      research.researchName,
+                                      research.researchName
                                     )
                                   }
                                   className={`w-full ${
@@ -273,7 +273,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
                                           }`}
                                         >
                                           {new Date(
-                                            research.createdAt,
+                                            research.createdAt
                                           ).toLocaleDateString("en-US", {
                                             month: "short",
                                             day: "numeric",

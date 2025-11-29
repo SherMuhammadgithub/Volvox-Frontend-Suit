@@ -72,31 +72,31 @@ export const useChatStore = create<ChatState>((set, get) => ({
         }));
       }
 
-      // Update current chat with new message
       const newMessage: ChatMessage = {
         question,
         response: data.response,
         research_id: researchId || null,
-        isNew: true,
       };
 
-      set((state) => ({
-        currentChat: state.currentChat
-          ? {
-              ...state.currentChat,
-              messages: [
-                ...state.currentChat.messages.map((msg) => ({ ...msg, isNew: false })),
-                newMessage,
-              ],
-            }
+      set((state) => {
+        const updatedMessages = state.currentChat
+          ? [...state.currentChat.messages, newMessage]
+          : [newMessage];
+
+        const updatedChat = state.currentChat
+          ? { ...state.currentChat, messages: updatedMessages }
           : {
               chat_id: data.chat_id,
               chat_title: data.chat_title,
               createdAt: new Date().toISOString(),
-              messages: [newMessage],
-            },
-        loading: false,
-      }));
+              messages: updatedMessages,
+            };
+
+        return {
+          currentChat: updatedChat,
+          loading: false,
+        };
+      });
 
       return data;
     } catch (error: any) {
