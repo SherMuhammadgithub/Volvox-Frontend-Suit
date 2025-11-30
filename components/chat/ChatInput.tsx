@@ -11,6 +11,7 @@ import { PaperAirplaneIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useResearchStore } from "@/store/researchStore";
 import { useAuthStore } from "@/store/authStore";
+import { Divider } from "@heroui/divider";
 
 interface ChatInputProps {
   onSend: (message: string, researchId?: string) => void;
@@ -102,9 +103,10 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         </Card>
       )}
 
-      <div className="flex flex-col gap-2 bg-default-100/50 dark:bg-default-100/40 rounded-2xl px-4 py-3 border border-default-300/40">
+      <div className="flex flex-col gap-2 bg-default-100/50 dark:bg-default-100/40 rounded-2xl px-4 py-3 border-1 border-default-300/40">
         <Textarea
           value={message}
+          variant="bordered"
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask anything"
@@ -115,12 +117,10 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
             base: "w-full",
             input:
               "text-default-700 placeholder:text-default-400 bg-transparent text-sm font-normal resize-none p-3",
-            innerWrapper: "bg-transparent",
-            inputWrapper: "bg-transparent shadow-none p-0 h-auto min-h-[40px]",
           }}
         />
 
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 ">
           <div className="flex items-center gap-2">
             <Popover
               isOpen={isPopoverOpen}

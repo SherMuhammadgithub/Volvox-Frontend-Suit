@@ -208,7 +208,9 @@ export default function DashboardLayout({
                         if (onNav) onNav();
                       }}
                     >
-                      {chat.chat_title}
+                      {chat.chat_title.length > 24
+                        ? chat.chat_title.slice(0, 24) + "..."
+                        : chat.chat_title}
                     </Button>
                     <Button
                       isIconOnly

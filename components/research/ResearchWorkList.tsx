@@ -11,7 +11,7 @@ import { Divider } from "@heroui/divider";
 import { useAuthStore } from "@/store/authStore";
 import { ResearchWork } from "@/types";
 import { SearchIcon } from "../icons";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassCircleIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface ResearchWorkListProps {
   researchWorks?: ResearchWork[];
@@ -24,6 +24,7 @@ interface ResearchWorkListProps {
   onClear: () => void;
   onEdit: (research: ResearchWork) => void;
   onDelete: (researchId: string) => void;
+  onAdd?: () => void;
 }
 
 export function ResearchWorkList({
@@ -37,6 +38,7 @@ export function ResearchWorkList({
   onClear,
   onEdit,
   onDelete,
+  onAdd,
 }: ResearchWorkListProps) {
   // Convert JS Date <-> CalendarDate for DatePicker
   function toCalendarDate(d: Date | null): CalendarDate | null {
@@ -84,50 +86,66 @@ export function ResearchWorkList({
     }
   }
 
-  // No sections, just a flat list of documents
-
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row gap-2 md:items-center ">
-        <Input
-          label="Search by Title"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="md:w-1/2"
-        />
-        <DatePicker
-          label="From"
-          value={toCalendarDate(dateRange[0])}
-          onChange={(date) => setDateRange([toJSDate(date), dateRange[1]])}
-          className="md:w-1/4"
-        />
-        <DatePicker
-          label="To"
-          value={toCalendarDate(dateRange[1])}
-          onChange={(date) => setDateRange([dateRange[0], toJSDate(date)])}
-          className="md:w-1/4"
-        />
-        <Button
-          color="primary"
-          onPress={onSearch}
-          className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
-        >
-          <SearchIcon className="w-5 h-5" />
-          <span className="inline">Search</span>
-        </Button>
-        <Button
-          color="secondary"
-          variant="light"
-          onPress={onClear}
-          className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
-        >
-          <XMarkIcon className="w-5 h-5" />
-          <span className="inline">Clear</span>
-        </Button>
+      <div className="flex flex-col md:flex-row gap-2 md:gap-16 md:items-center ">
+        <div className="flex flex-col md:flex-row gap-2 md:items-center md:flex-1">
+          <Input
+            label="Search by Title"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="md:w-1/2"
+          />
+          <DatePicker
+            label="From"
+            value={toCalendarDate(dateRange[0])}
+            onChange={(date) => setDateRange([toJSDate(date), dateRange[1]])}
+            className="md:w-1/4"
+          />
+          <DatePicker
+            label="To"
+            value={toCalendarDate(dateRange[1])}
+            onChange={(date) => setDateRange([dateRange[0], toJSDate(date)])}
+            className="md:w-1/4"
+          />
+        </div>
+        <div className="flex gap-2 mt-2 md:mt-0 md:ml-auto">
+          <Button
+            color="primary"
+            variant="solid"
+            onPress={onSearch}
+            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+          >
+            <MagnifyingGlassCircleIcon className="w-4 h-4" />
+            <span className="inline">Search</span>
+          </Button>
+          <Button
+            color="default"
+            variant="flat"
+            onPress={onClear}
+            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+          >
+            <XMarkIcon className="w-4 h-4" />
+            <span className="inline">Clear</span>
+          </Button>
+        </div>
       </div>
 
       {/* use the divider to indicate the difference */}
-      <Divider className="my-6" />
+      <Divider className="my-4" />
+
+      <div className="flex justify-end mb-4">
+        <Button
+          color="primary"
+          className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+          onPress={onAdd}
+          aria-label="Add Research Work"
+        >
+          <PlusIcon className="w-5 h-5" />
+          <span className="inline">Add Research Work</span>
+        </Button>
+      </div>
+
       {/* Flat grid of document cards, no sections */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {loading ? (

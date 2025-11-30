@@ -67,7 +67,7 @@ export default function DashboardPage() {
         window.history.replaceState(
           null,
           "",
-          `/dashboard/chat/${response.chat_id}`,
+          `/dashboard/chat/${response.chat_id}`
         );
       }
     } catch (error) {

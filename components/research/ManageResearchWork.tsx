@@ -1,12 +1,10 @@
 "use client";
 
-import { Button } from "@heroui/button";
-import { PlusIcon } from "@heroicons/react/24/solid";
 import ResearchWorkFormModal from "./ResearchWorkFormModal";
 import EditResearchModal from "./EditResearchModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { ResearchWorkList } from "./ResearchWorkList";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useResearchStore } from "@/store/researchStore";
 import { useAuthStore } from "@/store/authStore";
 import { ResearchWork } from "@/types";
@@ -37,24 +35,16 @@ export default function ManageResearchWork() {
   const authToken = useAuthStore((s) => s.token);
 
   // fecth research works on initial load
-  React.useEffect(() => {
-    console.log(
-      "🔍 ManageResearchWork useEffect triggered, authToken:",
-      authToken ? "exists" : "null",
-      "hasInitialFetch:",
-      hasInitialFetch.current
-    );
+  useEffect(() => {
     if (authToken && !hasInitialFetch.current) {
-      console.log("📞 Calling handleSearch from useEffect (first time only)");
       hasInitialFetch.current = true;
       handleSearch();
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authToken]);
 
   // Only fetch on explicit search
   const handleSearch = () => {
-    console.log("📞 handleSearch called");
     if (!authToken) return;
     const start = dateRange[0]?.toISOString();
     const end = dateRange[1]?.toISOString();
@@ -85,7 +75,6 @@ export default function ManageResearchWork() {
   const handleAddResearchWork = async (title: string, file: File | null) => {
     if (!file || !authToken) return;
     await addResearch({ researchName: title, file, authToken });
-    // Store will update the array automatically, no need to refetch
   };
 
   const handleEditResearch = (research: ResearchWork) => {
@@ -99,25 +88,14 @@ export default function ManageResearchWork() {
     file?: File
   ) => {
     if (!authToken) return;
-    // Mock update for testing (when no real API)
-    if (researchId.startsWith("mock-")) {
-      console.log("🔄 Mock Update Research:", {
-        researchId,
-        title,
-        fileName: file?.name,
-      });
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Mock success - in real app this would update the backend
-    } else {
-      await updateResearch({
-        researchId,
-        researchName: title,
-        file,
-        authToken,
-      });
-    }
-    // Store will update the array automatically, no need to refetch
+
+    await updateResearch({
+      researchId,
+      researchName: title,
+      file,
+      authToken,
+    });
+
     setEditModalOpen(false);
     setSelectedResearch(null);
   };
@@ -134,38 +112,15 @@ export default function ManageResearchWork() {
     if (!selectedResearch || !authToken) return;
     const researchId = selectedResearch._id || selectedResearch.id || "";
 
-    // Mock delete for testing (when no real API)
-    if (researchId.startsWith("mock-")) {
-      console.log("🗑️ Mock Delete Research:", {
-        researchId,
-        name: selectedResearch.researchName,
-      });
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Mock success - in real app this would delete from backend
-    } else {
-      await deleteResearch({
-        researchId,
-        authToken,
-      });
-    }
-    // Store will update the array automatically, no need to refetch
+    await deleteResearch({
+      researchId,
+      authToken,
+    });
   };
 
   return (
     <div className="max-w-7xl mx-auto p-2 sm:p-4 space-y-6">
       <div className="p-2 sm:p-4 space-y-6 overflow-x-auto">
-        <div className="flex justify-end mb-4">
-          <Button
-            color="primary"
-            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
-            onPress={() => setModalOpen(true)}
-            aria-label="Add Research Work"
-          >
-            <PlusIcon className="w-5 h-5" />
-            <span className="inline">Add Research Work</span>
-          </Button>
-        </div>
         <ResearchWorkFormModal
           isOpen={modalOpen}
           onOpenChange={setModalOpen}
@@ -204,6 +159,7 @@ export default function ManageResearchWork() {
           onClear={handleClear}
           onEdit={handleEditResearch}
           onDelete={handleDeleteResearch}
+          onAdd={() => setModalOpen(true)}
         />
       </div>
     </div>
