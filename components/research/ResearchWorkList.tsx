@@ -53,48 +53,7 @@ export function ResearchWorkList({
   const fromDate = dateRange[0];
   const toDate = dateRange[1];
   // Mock data for testing when no real data is available
-  const mockResearchWorks: ResearchWork[] = [
-    // {
-    //   _id: "mock-1",
-    //   researchName: "AI in Healthcare Research",
-    //   fileName: "ai-healthcare-study.pdf",
-    //   file_id: "file-1",
-    //   extension: "pdf",
-    //   createdAt: "2024-10-15T10:00:00Z"
-    // },
-    // {
-    //   _id: "mock-2",
-    //   researchName: "Quantum Computing Analysis",
-    //   fileName: "quantum-computing.docx",
-    //   file_id: "file-2",
-    //   extension: "docx",
-    //   createdAt: "2024-10-20T14:30:00Z"
-    // },
-    // {
-    //   _id: "mock-3",
-    //   researchName: "Machine Learning in Finance",
-    //   fileName: "ml-finance-report.pdf",
-    //   file_id: "file-3",
-    //   extension: "pdf",
-    //   createdAt: "2024-10-25T09:15:00Z"
-    // },
-    // {
-    //   _id: "mock-4",
-    //   researchName: "Blockchain Technology Study",
-    //   fileName: "blockchain-research.pptx",
-    //   file_id: "file-4",
-    //   extension: "pptx",
-    //   createdAt: "2024-10-28T16:45:00Z"
-    // },
-    // {
-    //   _id: "mock-5",
-    //   researchName: "Climate Change Data Analysis",
-    //   fileName: "climate-data.xlsx",
-    //   file_id: "file-5",
-    //   extension: "xlsx",
-    //   createdAt: "2024-10-30T11:20:00Z"
-    // }
-  ];
+  const mockResearchWorks: ResearchWork[] = [];
 
   // Use mock data if no real research works are available
   const dataToUse =

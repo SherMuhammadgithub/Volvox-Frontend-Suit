@@ -30,6 +30,7 @@ import {
   DocumentMagnifyingGlassIcon,
   Cog6ToothIcon,
   ArrowPathIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import ProtectedRoute from "@/components/protectedRoute";
 
@@ -78,9 +79,9 @@ export default function DashboardLayout({
       icon: DocumentMagnifyingGlassIcon,
     },
     {
-      label: "Settings",
-      href: "/dashboard/settings",
-      icon: Cog6ToothIcon,
+      label: "Summarize Research",
+      href: "/dashboard/summarize",
+      icon: DocumentTextIcon,
     },
   ];
 
@@ -138,7 +139,7 @@ export default function DashboardLayout({
             return (
               <Button
                 key={link.href}
-                className={`w-full justify-start rounded-lg px-3 py-2 font-medium transition-colors
+                className={`w-full justify-start rounded-lg px-3 py-2 font-medium transition-colors text-default-500
                   ${
                     isActive
                       ? "bg-secondary/10 text-primary dark:text-primary-foreground"

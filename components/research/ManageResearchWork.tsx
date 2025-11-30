@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import ResearchWorkFormModal from "./ResearchWorkFormModal";
@@ -11,10 +10,6 @@ import React, { useState, useRef } from "react";
 import { useResearchStore } from "@/store/researchStore";
 import { useAuthStore } from "@/store/authStore";
 import { ResearchWork } from "@/types";
-import {
-  DocumentChartBarIcon,
-  DocumentMagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
 
 export default function ManageResearchWork() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -159,24 +154,18 @@ export default function ManageResearchWork() {
 
   return (
     <div className="max-w-7xl mx-auto p-2 sm:p-4 space-y-6">
-      <div className="flex flex-col items-center sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
-        <div className="flex-1 w-full">
-          <h1 className="flex items-center gap-2 text-xl sm:text-2xl font-bold truncate text-center sm:text-left w-full sm:w-auto">
-            <DocumentChartBarIcon className="w-6 h-6" />
-            Manage Research Work
-          </h1>
-        </div>
-        <Button
-          color="primary"
-          className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
-          onPress={() => setModalOpen(true)}
-          aria-label="Add Research Work"
-        >
-          <PlusIcon className="w-5 h-5" />
-          <span className="inline">Add Research Work</span>
-        </Button>
-      </div>
       <div className="p-2 sm:p-4 space-y-6 overflow-x-auto">
+        <div className="flex justify-end mb-4">
+          <Button
+            color="primary"
+            className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
+            onPress={() => setModalOpen(true)}
+            aria-label="Add Research Work"
+          >
+            <PlusIcon className="w-5 h-5" />
+            <span className="inline">Add Research Work</span>
+          </Button>
+        </div>
         <ResearchWorkFormModal
           isOpen={modalOpen}
           onOpenChange={setModalOpen}
