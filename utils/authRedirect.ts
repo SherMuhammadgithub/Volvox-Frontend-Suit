@@ -4,6 +4,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+const LOGOUT_URL = process.env.NEXT_PUBLIC_LOGOUT_URL || "";
+const USE_CUSTOM_LOGOUT = process.env.NEXT_PUBLIC_USE_CUSTOM_LOGOUT === "true";
+
 // Call in protected pages (e.g. dashboard)
 export function useRequireAuth() {
   const router = useRouter();
@@ -11,7 +14,11 @@ export function useRequireAuth() {
     if (typeof window !== "undefined") {
       const token = sessionStorage.getItem("auth-token");
       if (!token) {
-        router.replace("/auth/login");
+        if (USE_CUSTOM_LOGOUT) {
+          window.location.href = LOGOUT_URL;
+        } else {
+          router.replace("/auth/login");
+        }
       }
     }
   }, [router]);

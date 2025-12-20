@@ -33,6 +33,7 @@ import {
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import ProtectedRoute from "@/components/protectedRoute";
+import DashboardNavbar from "@/components/DashboardNavbar";
 
 export default function DashboardLayout({
   children,
@@ -87,7 +88,14 @@ export default function DashboardLayout({
 
   function handleLogout() {
     logout();
-    router.push("/auth/login");
+    const LOGOUT_URL = process.env.NEXT_PUBLIC_LOGOUT_URL || "";
+    const USE_CUSTOM_LOGOUT =
+      process.env.NEXT_PUBLIC_USE_CUSTOM_LOGOUT === "true";
+    if (USE_CUSTOM_LOGOUT) {
+      window.location.href = LOGOUT_URL;
+    } else {
+      router.push("/auth/login");
+    }
   }
 
   function handleChatClick(chatId: string) {
@@ -282,10 +290,21 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen">
-      {/* Desktop sidebar */}
-      <div className="hidden md:flex h-full flex-col w-64 bg-white dark:bg-default-100 border-r border-default-200">
-        <Nav />
+    <div className="flex flex-col h-screen">
+      {/* Sticky dashboard navbar at top */}
+      <DashboardNavbar />
+      <div className="flex flex-1">
+        {/* Desktop sidebar */}
+        <div className="hidden md:flex h-full flex-col w-64 bg-white dark:bg-default-100 border-r border-default-200">
+          <Nav />
+        </div>
+        {/* Main content */}
+        <main className="flex-1 flex flex-col overflow-hidden relative">
+          {/* Page content */}
+          <div className="flex-1 overflow-y-auto md:mt-4">
+            <ProtectedRoute>{children}</ProtectedRoute>
+          </div>
+        </main>
       </div>
       {/* Mobile sidebar using HeroUI Drawer */}
       <div className="md:hidden">
@@ -310,47 +329,6 @@ export default function DashboardLayout({
           </DrawerContent>
         </Drawer>
       </div>
-      {/* Main content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Mobile header with hamburger */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white dark:bg-default-100 border-b border-default-200">
-          <Button
-            isIconOnly
-            variant="light"
-            size="sm"
-            aria-label="Open navigation"
-            onPress={() => setMobileOpen(true)}
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </Button>
-          <h1 className="text-lg font-semibold">
-            {pathname === "/dashboard"
-              ? "Chat"
-              : pathname.includes("/research")
-                ? "Research"
-                : pathname.includes("/chat/")
-                  ? "Chat"
-                  : "Dashboard"}
-          </h1>
-        </div>
-        {/* Page content */}
-        <div className="flex-1 overflow-y-auto md:mt-4">
-          <ProtectedRoute>{children}</ProtectedRoute>
-        </div>
-      </main>
-
       {/* Delete Confirmation Modal */}
       <Modal isOpen={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <ModalContent>

@@ -1,6 +1,11 @@
 import axios from "axios";
+import { extractJsonArrayFromTextResponse } from "./utils";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "";
+
+function isArray(data: any): data is any[] {
+  return Array.isArray(data);
+}
 
 export async function summarizeResearch({
   documentIds,
@@ -9,18 +14,37 @@ export async function summarizeResearch({
   documentIds: string[];
   authToken: string;
 }) {
-  const response = await axios.post(
-    `${API_BASE}/chat/summarize-research`,
-    {
-      documents: documentIds,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
+  try {
+    const response = await axios.post(
+      API_BASE,
+      {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "volvox_summarize_research",
+          arguments: {
+            document_ids: documentIds,
+            token: authToken,
+          },
+        },
       },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    const data = extractJsonArrayFromTextResponse(response.data);
+    if (isArray(data)) {
+      return data;
+    } else {
+      return [];
     }
-  );
-  return response.data;
+  } catch (error) {
+    return [];
+  }
 }
 
 export async function summarizeVideo({
@@ -30,15 +54,35 @@ export async function summarizeVideo({
   videoUrl: string;
   authToken: string;
 }) {
-  const response = await axios.post(
-    `${API_BASE}/chat/summarize-video`,
-    {}, // POST body (empty if not needed)
-    {
-      params: { video_url: videoUrl },
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+  try {
+    const response = await axios.post(
+      `${API_BASE}`,
+      {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "volvox_summarize_video",
+          arguments: {
+            video_url: videoUrl,
+            token: authToken,
+          },
+        },
+      }, // POST body (empty if not needed)
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    const data = extractJsonArrayFromTextResponse(response.data);
+    if (isArray(data)) {
+      return data;
+    } else {
+      return [];
     }
-  );
-  return response.data;
+  } catch (error) {
+    return [];
+  }
 }

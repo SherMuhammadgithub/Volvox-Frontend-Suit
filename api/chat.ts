@@ -1,4 +1,5 @@
 import axios from "axios";
+import { extractJsonArrayFromTextResponse } from "./utils";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
@@ -24,6 +25,14 @@ export interface AskQuestionResponse {
   chat_title: string;
 }
 
+function isArray(data: any): data is any[] {
+  return Array.isArray(data);
+}
+
+function isObject(data: any): data is object {
+  return typeof data === "object" && data !== null && !Array.isArray(data);
+}
+
 export async function askQuestion({
   question,
   chatId,
@@ -36,24 +45,52 @@ export async function askQuestion({
   researchId?: string;
   web_search?: boolean;
   authToken: string;
-}): Promise<AskQuestionResponse> {
-  const params = new URLSearchParams();
-  params.append("question", question);
-  if (chatId) params.append("chat_id", chatId);
-  if (researchId) params.append("document_id", researchId);
-  if (typeof web_search === "boolean")
-    params.append("web_search", web_search ? "True" : "False");
-
-  const response = await axios.post(
-    `${API_BASE}/chat/ask?${params.toString()}`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
+}): Promise<AskQuestionResponse | null> {
+  try {
+    const response = await axios.post(
+      `${API_BASE}`,
+      {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "volvox_chat_ask",
+          arguments: {
+            question,
+            document_id: researchId ?? "",
+            chat_id: chatId ?? "",
+            web_search: typeof web_search === "boolean" ? web_search : false,
+            token: authToken,
+          },
+        },
       },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    // Defensive: check for error in response
+    if (response.data?.result?.isError || response.data?.isError) {
+      return null;
     }
-  );
-  return response.data;
+
+    // Defensive: check for error in extracted content
+    const data = extractJsonArrayFromTextResponse(response.data) as any;
+    if (
+      data &&
+      typeof data === "object" &&
+      !Array.isArray(data) &&
+      !data.error
+    ) {
+      return data as AskQuestionResponse;
+    }
+    return null;
+  } catch (error) {
+    console.error("askQuestion error:", error);
+    return null;
+  }
 }
 
 export async function getChatHistory({
@@ -61,12 +98,36 @@ export async function getChatHistory({
 }: {
   authToken: string;
 }): Promise<Chat[]> {
-  const response = await axios.get(`${API_BASE}/chat/chatHistory`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-  return response.data;
+  try {
+    const response = await axios.post(
+      `${API_BASE}`,
+      {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "volvox_chat_history_list",
+          arguments: {
+            token: authToken,
+          },
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    const data = extractJsonArrayFromTextResponse(response.data);
+    if (isArray(data)) {
+      return data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    return [];
+  }
 }
 
 export async function getChatById({
@@ -75,13 +136,37 @@ export async function getChatById({
 }: {
   chatId: string;
   authToken: string;
-}): Promise<ChatDetail> {
-  const response = await axios.get(`${API_BASE}/chat/chatHistory/${chatId}`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-  return response.data;
+}): Promise<ChatDetail | null> {
+  try {
+    const response = await axios.post(
+      `${API_BASE}`,
+      {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "volvox_chat_history_get",
+          arguments: {
+            chat_id: chatId,
+            token: authToken,
+          },
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    const data = extractJsonArrayFromTextResponse(response.data) as any;
+    if (isObject(data)) {
+      return data as ChatDetail;
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function deleteChat({
@@ -91,9 +176,29 @@ export async function deleteChat({
   chatId: string;
   authToken: string;
 }): Promise<void> {
-  await axios.delete(`${API_BASE}/chat/deleteChat/${chatId}`, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
+  try {
+    await axios.post(
+      `${API_BASE}`,
+      {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "volvox_chat_history_delete",
+          arguments: {
+            chat_id: chatId,
+            token: authToken,
+          },
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    // fail silently
+    return;
+  }
 }
