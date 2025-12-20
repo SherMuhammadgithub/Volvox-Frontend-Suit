@@ -211,11 +211,7 @@ export async function updateResearchWork({
     });
 
     const data = extractJsonArrayFromTextResponse(response.data);
-    if (isArray(data)) {
-      return data;
-    } else {
-      return [];
-    }
+    return data;
   } catch (error) {
     return [];
   }

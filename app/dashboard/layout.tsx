@@ -127,7 +127,7 @@ export default function DashboardLayout({
   }
   function Nav({ onNav }: { onNav?: () => void } = {}) {
     return (
-      <nav className="flex flex-col h-full w-64 md:border-r md:border-default-200 p-4">
+      <nav className="flex flex-col h-[90vh] w-64 md:border-r md:border-default-200 p-4 bg-white dark:bg-default-100">
         <div className="mb-6 flex items-center gap-2">
           <Avatar
             size="sm"
@@ -177,7 +177,7 @@ export default function DashboardLayout({
             Recent Chats
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto mb-4 scrollbar-hide">
+        <div className="flex-1 mb-4 overflow-y-auto scrollbar-hide">
           <style>{`
             .scrollbar-hide::-webkit-scrollbar {
               display: none;

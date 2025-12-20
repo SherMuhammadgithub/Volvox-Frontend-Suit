@@ -10,7 +10,6 @@ import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 // import { Navbar } from "@/components/navbar";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { AuthInitializer } from "@/components/auth-initializer";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import { PWAInstallModal } from "@/components/pwa-install-modal";
 
