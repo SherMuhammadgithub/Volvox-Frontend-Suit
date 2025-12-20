@@ -60,7 +60,11 @@ export default function ChatPage() {
     );
   }
 
-  const handleSendMessage = async (message: string, researchId?: string, web_search?: boolean) => {
+  const handleSendMessage = async (
+    message: string,
+    researchId?: string,
+    web_search?: boolean
+  ) => {
     if (!authToken) return;
 
     try {
@@ -77,7 +81,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-7xl mx-auto w-full">
+    <div className="flex flex-col h-[88vh] max-w-7xl mx-auto w-full">
       {/* Chat title only */}
       {/* <span className="px-4 pt-2  text-lg font-semibold text-default-900">
         {loadingChat ? "Loading..." : currentChat?.chat_title || "Chat"}

@@ -127,7 +127,7 @@ export default function DashboardLayout({
   }
   function Nav({ onNav }: { onNav?: () => void } = {}) {
     return (
-      <nav className="flex flex-col h-[90vh] w-64 md:border-r md:border-default-200 p-4 bg-white dark:bg-default-100">
+      <nav className="flex flex-col h-full w-64 md:border-r md:border-default-200 p-4">
         <div className="mb-6 flex items-center gap-2">
           <Avatar
             size="sm"
@@ -177,7 +177,7 @@ export default function DashboardLayout({
             Recent Chats
           </div>
         </div>
-        <div className="flex-1 mb-4 overflow-y-auto scrollbar-hide">
+        <div className="flex-1 overflow-y-auto mb-4 scrollbar-hide">
           <style>{`
             .scrollbar-hide::-webkit-scrollbar {
               display: none;
@@ -290,77 +290,113 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Sticky dashboard navbar at top */}
+    <>
       <DashboardNavbar />
-      <div className="flex flex-1">
+      <div className="flex h-[91vh]">
         {/* Desktop sidebar */}
+
         <div className="hidden md:flex h-full flex-col w-64 bg-white dark:bg-default-100 border-r border-default-200">
           <Nav />
         </div>
+        {/* Mobile sidebar using HeroUI Drawer */}
+        <div className="md:hidden">
+          <Drawer
+            isOpen={mobileOpen}
+            onOpenChange={setMobileOpen}
+            placement="left"
+            size="full"
+          >
+            <DrawerContent>
+              {(onClose) => (
+                <>
+                  <DrawerHeader className="flex flex-col gap-1">
+                    Navigation
+                  </DrawerHeader>
+                  <DrawerBody className="p-0">
+                    <Nav onNav={() => setMobileOpen(false)} />
+                  </DrawerBody>
+                  {/* No DrawerFooter/Close button at the bottom */}
+                </>
+              )}
+            </DrawerContent>
+          </Drawer>
+        </div>
         {/* Main content */}
-        <main className="flex-1 flex flex-col overflow-hidden relative">
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {/* Mobile header with hamburger */}
+          <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white dark:bg-default-100 border-b border-default-200">
+            <Button
+              isIconOnly
+              variant="light"
+              size="sm"
+              aria-label="Open navigation"
+              onPress={() => setMobileOpen(true)}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </Button>
+            <h1 className="text-lg font-semibold">
+              {pathname === "/dashboard"
+                ? "Chat"
+                : pathname.includes("/research")
+                  ? "Research"
+                  : pathname.includes("/chat/")
+                    ? "Chat"
+                    : "Dashboard"}
+            </h1>
+          </div>
           {/* Page content */}
-          <div className="flex-1 overflow-y-auto md:mt-4">
+          <div className="overflow-y-auto md:mt-4">
             <ProtectedRoute>{children}</ProtectedRoute>
           </div>
         </main>
+
+        {/* Delete Confirmation Modal */}
+        <Modal isOpen={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1">
+              Delete Chat
+            </ModalHeader>
+            <ModalBody>
+              <p>
+                Are you sure you want to delete this chat? This action cannot be
+                undone.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color="default"
+                variant="light"
+                onPress={() => {
+                  setDeleteModalOpen(false);
+                  setChatToDelete(null);
+                }}
+                disabled={isDeletingChat}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="danger"
+                onPress={confirmDeleteChat}
+                isLoading={isDeletingChat}
+              >
+                Delete
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
-      {/* Mobile sidebar using HeroUI Drawer */}
-      <div className="md:hidden">
-        <Drawer
-          isOpen={mobileOpen}
-          onOpenChange={setMobileOpen}
-          placement="left"
-          size="full"
-        >
-          <DrawerContent>
-            {(onClose) => (
-              <>
-                <DrawerHeader className="flex flex-col gap-1">
-                  Navigation
-                </DrawerHeader>
-                <DrawerBody className="p-0">
-                  <Nav onNav={() => setMobileOpen(false)} />
-                </DrawerBody>
-                {/* No DrawerFooter/Close button at the bottom */}
-              </>
-            )}
-          </DrawerContent>
-        </Drawer>
-      </div>
-      {/* Delete Confirmation Modal */}
-      <Modal isOpen={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">Delete Chat</ModalHeader>
-          <ModalBody>
-            <p>
-              Are you sure you want to delete this chat? This action cannot be
-              undone.
-            </p>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color="default"
-              variant="light"
-              onPress={() => {
-                setDeleteModalOpen(false);
-                setChatToDelete(null);
-              }}
-              disabled={isDeletingChat}
-            >
-              Cancel
-            </Button>
-            <Button
-              color="danger"
-              onPress={confirmDeleteChat}
-              isLoading={isDeletingChat}
-            >
-              Delete
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </div>
+    </>
   );
 }
