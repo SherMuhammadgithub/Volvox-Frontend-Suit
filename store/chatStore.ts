@@ -7,6 +7,7 @@ import {
   Chat,
   ChatDetail,
   ChatMessage,
+  AskQuestionResponse,
 } from "@/api/chat";
 import { addToast } from "@heroui/toast";
 
@@ -25,7 +26,11 @@ interface ChatState {
     researchId?: string;
     web_search?: boolean;
     authToken: string;
-  }) => Promise<{ response: string; chat_id: string; chat_title: string }>;
+  }) => Promise<{
+    response: string;
+    chat_id: string;
+    chat_title: string;
+  } | null>;
 
   fetchChatHistory: (params: { authToken: string }) => Promise<void>;
 
@@ -50,16 +55,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
   currentChatId: null,
   deletingChatId: null,
 
-  askQuestion: async ({ question, chatId, researchId, web_search, authToken }) => {
+  askQuestion: async ({
+    question,
+    chatId,
+    researchId,
+    web_search,
+    authToken,
+  }) => {
     set({ loading: true, error: null });
     try {
-      const data = await askQuestion({
+      const data: AskQuestionResponse | null = await askQuestion({
         question,
         chatId,
         researchId,
         web_search,
         authToken,
       });
+
+      if (!data) {
+        set({ loading: false, error: "No response from server" });
+        addToast({
+          title: "Error",
+          description: "No response from server",
+          color: "danger",
+        });
+        return null;
+      }
 
       // If it's a new chat, add to history
       if (!chatId || chatId !== data.chat_id) {
@@ -100,7 +121,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         };
       });
 
-      return data;
+      return {
+        response: data.response,
+        chat_id: data.chat_id,
+        chat_title: data.chat_title,
+      };
     } catch (error: any) {
       set({
         loading: false,

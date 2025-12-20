@@ -119,7 +119,7 @@ export async function getChatHistory({
       }
     );
 
-    const data = extractJsonArrayFromTextResponse(response.data);
+    const data = extractJsonArrayFromTextResponse(response.data) as any;
     if (isArray(data)) {
       return data;
     } else {

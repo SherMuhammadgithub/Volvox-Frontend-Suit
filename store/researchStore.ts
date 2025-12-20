@@ -46,10 +46,22 @@ export const useResearchStore = create<ResearchState>((set) => ({
     try {
       const data = await addResearchWork({ researchName, file, authToken });
       // Add the new research work to the beginning of the array
-      set((state) => ({
-        researchWorks: [data, ...state.researchWorks],
-        loading: false,
-      }));
+      set((state) => {
+        let newResearchWorks: ResearchWork[] = state.researchWorks;
+        // Only add if data is a single ResearchWork object
+        if (
+          data &&
+          !Array.isArray(data) &&
+          typeof data === "object" &&
+          "_id" in data
+        ) {
+          newResearchWorks = [data as ResearchWork, ...state.researchWorks];
+        }
+        return {
+          researchWorks: newResearchWorks,
+          loading: false,
+        };
+      });
       return data;
     } catch (error: any) {
       set({

@@ -1,15 +1,15 @@
 "use client";
 
-
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Spinner } from "@heroui/spinner";
+import { Suspense } from "react";
 import { useAuthStore } from "@/store/authStore";
 
 const LOGOUT_URL = process.env.NEXT_PUBLIC_LOGOUT_URL || "";
 const USE_CUSTOM_LOGOUT = process.env.NEXT_PUBLIC_USE_CUSTOM_LOGOUT === "true";
 
-export default function Home() {
+function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -53,5 +53,19 @@ export default function Home() {
     <section className="flex flex-col items-center justify-center min-h-screen">
       <Spinner size="lg" color="primary" />
     </section>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense
+      fallback={
+        <section className="flex flex-col items-center justify-center min-h-screen">
+          <Spinner size="lg" color="primary" />
+        </section>
+      }
+    >
+      <HomeContent />
+    </Suspense>
   );
 }

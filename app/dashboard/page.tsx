@@ -68,7 +68,7 @@ export default function DashboardPage() {
 
       // Update URL without navigation to avoid skeleton loading
       // Only update URL on first message (when currentChat didn't have a chat_id)
-      if (response.chat_id && !currentChat?.chat_id) {
+      if (response && response.chat_id && !currentChat?.chat_id) {
         window.history.replaceState(
           null,
           "",
