@@ -60,7 +60,7 @@ export default function ChatPage() {
     );
   }
 
-  const handleSendMessage = async (message: string, researchId?: string) => {
+  const handleSendMessage = async (message: string, researchId?: string, web_search?: boolean) => {
     if (!authToken) return;
 
     try {
@@ -68,6 +68,7 @@ export default function ChatPage() {
         question: message,
         chatId: chatId,
         researchId, // Pass selected research_id
+        web_search,
         authToken,
       });
     } catch (error) {

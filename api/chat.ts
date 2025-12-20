@@ -28,17 +28,21 @@ export async function askQuestion({
   question,
   chatId,
   researchId,
+  web_search,
   authToken,
 }: {
   question: string;
   chatId?: string;
   researchId?: string;
+  web_search?: boolean;
   authToken: string;
 }): Promise<AskQuestionResponse> {
   const params = new URLSearchParams();
   params.append("question", question);
   if (chatId) params.append("chat_id", chatId);
   if (researchId) params.append("document_id", researchId);
+  if (typeof web_search === "boolean")
+    params.append("web_search", web_search ? "True" : "False");
 
   const response = await axios.post(
     `${API_BASE}/chat/ask?${params.toString()}`,

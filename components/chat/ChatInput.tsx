@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Switch } from "@heroui/switch";
 import { Button } from "@heroui/button";
 import { Textarea, Input } from "@heroui/input";
 import { Chip } from "@heroui/chip";
@@ -9,12 +10,12 @@ import { Tooltip } from "@heroui/tooltip";
 import { Card, CardBody } from "@heroui/card";
 import { PaperAirplaneIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+
 import { useResearchStore } from "@/store/researchStore";
 import { useAuthStore } from "@/store/authStore";
-import { Divider } from "@heroui/divider";
 
 interface ChatInputProps {
-  onSend: (message: string, researchId?: string) => void;
+  onSend: (message: string, researchId?: string, web_search?: boolean) => void;
   disabled?: boolean;
 }
 
@@ -26,6 +27,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
   } | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [webSearch, setWebSearch] = useState(false);
 
   const { researchWorks, fetchResearchWorks } = useResearchStore();
   const authToken = useAuthStore((s) => s.token);
@@ -44,7 +46,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
 
   const handleSend = () => {
     if (!message.trim()) return;
-    onSend(message, selectedResearch?.id);
+    onSend(message, selectedResearch?.id, webSearch);
     setMessage("");
     setSelectedResearch(null);
   };
@@ -317,9 +319,29 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
                 </div>
               </PopoverContent>
             </Popover>
-            <span className="text-xs text-default-500">
+
+            {/* <span className="text-xs text-default-500">
               Attach research work
-            </span>
+            </span> */}
+
+            {/* Web Search Toggle */}
+            <div className="flex items-center gap-2">
+              <Switch
+                isSelected={webSearch}
+                onChange={() => setWebSearch((prev) => !prev)}
+                size="sm"
+                color="primary"
+              >
+                <Chip
+                  size="sm"
+                  variant={webSearch ? "dot" : "dot"}
+                  color={webSearch ? "success" : "danger"}
+                  className="ml-2 text-xs font-medium"
+                >
+                  {webSearch ? "Web search ON" : "Web search OFF"}
+                </Chip>
+              </Switch>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">

@@ -50,7 +50,11 @@ export default function DashboardPage() {
     );
   }
 
-  const handleSendMessage = async (message: string, researchId?: string) => {
+  const handleSendMessage = async (
+    message: string,
+    researchId?: string,
+    web_search?: boolean
+  ) => {
     if (!authToken) return;
 
     try {
@@ -58,6 +62,7 @@ export default function DashboardPage() {
         question: message,
         chatId: currentChat?.chat_id, // Pass existing chat_id if available
         researchId, // Pass selected research_id
+        web_search,
         authToken,
       });
 

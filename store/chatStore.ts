@@ -23,6 +23,7 @@ interface ChatState {
     question: string;
     chatId?: string;
     researchId?: string;
+    web_search?: boolean;
     authToken: string;
   }) => Promise<{ response: string; chat_id: string; chat_title: string }>;
 
@@ -49,13 +50,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
   currentChatId: null,
   deletingChatId: null,
 
-  askQuestion: async ({ question, chatId, researchId, authToken }) => {
+  askQuestion: async ({ question, chatId, researchId, web_search, authToken }) => {
     set({ loading: true, error: null });
     try {
       const data = await askQuestion({
         question,
         chatId,
         researchId,
+        web_search,
         authToken,
       });
 
