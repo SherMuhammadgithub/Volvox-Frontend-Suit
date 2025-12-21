@@ -103,7 +103,7 @@ export default function DashboardNavbar() {
             onClick={handleGetStarted}
             className="px-5 py-2 rounded-lg font-bold text-white bg-gradient-to-r from-purple-500 to-cyan-500 shadow-lg transition-all hover:scale-105"
           >
-            Get Started
+            Agentic Workflows
           </button>
           <button
             onClick={handleBackToDashboard}
