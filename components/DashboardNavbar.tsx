@@ -34,7 +34,7 @@ const openUrl = (key: string) => {
   if (key === "innoscope") {
     baseUrlEnv = process.env.NEXT_PUBLIC_INNOSCOPE_API_KEY || "";
   } else if (key === "smart_search") {
-    baseUrlEnv = process.env.NEXT_PUBLIC_AETHER_API_KEY || "";
+    baseUrlEnv = process.env.NEXT_PUBLIC_SMART_SEARCH_API_KEY || "";
   } else if (key === "kickstart") {
     baseUrlEnv = process.env.NEXT_PUBLIC_KICKSTART_API_KEY || "";
   }
