@@ -14,7 +14,7 @@ export async function downloadMarkdownAsPdf(
   const maxWidth = 170;
   const html = marked(markdown);
   await doc.html(
-    `<div style="font-family:'Pop20pins',sans-serif;font-size:18px;margin:32px 40px;">${html}</div>`,
+    `<div style="font-family:'Poppins',sans-serif;font-size:18px;margin:32px 40px;color:#000;">${html}</div>`,
     {
       x: leftMargin,
       y: topMargin,
@@ -35,7 +35,7 @@ export async function markdownToPdfBlob(markdown: string): Promise<Blob> {
   const html = marked(markdown);
   return new Promise((resolve) => {
     doc.html(
-      `<div style="font-family:'Poppins',sans-serif;font-size:18px;margin:32px 40px;">${html}</div>`,
+      `<div style="font-family:'Poppins',sans-serif;font-size:18px;margin:32px 40px;color:#000;">${html}</div>`,
       {
         x: leftMargin,
         y: topMargin,

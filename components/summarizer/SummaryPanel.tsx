@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { addToast, Button, Chip, Tooltip } from "@heroui/react";
+import { Button, Chip, Tooltip } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 import ReactMarkdown from "react-markdown";
 import {
   downloadMarkdownAsPdf,
