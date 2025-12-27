@@ -104,11 +104,7 @@ export async function addResearchWork({
     });
 
     const data = extractJsonArrayFromTextResponse(response.data);
-    if (isArray(data)) {
-      return data;
-    } else {
-      return [];
-    }
+    return data;
   } catch (error) {
     return [];
   }
@@ -143,7 +139,6 @@ export async function openOrDownloadFile(
       // Create a temporary link with download attribute to preserve filename
       const link = document.createElement("a");
       link.href = url;
-      link.download = downloadFileName;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       document.body.appendChild(link);

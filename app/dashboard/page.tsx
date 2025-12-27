@@ -81,7 +81,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col h-[88vh] max-w-7xl mx-auto w-full">
+    <div className="flex flex-col h-[78vh] md:h-[88vh] max-w-7xl mx-auto w-full">
       {/* Chat Messages */}
       <ChatMessages
         messages={currentChat?.messages || []}

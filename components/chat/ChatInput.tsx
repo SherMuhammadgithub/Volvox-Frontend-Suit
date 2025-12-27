@@ -345,7 +345,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <Chip size="sm" variant="flat" className="text-default-600">
+            <Chip size="sm" variant="flat" className="text-default-600 hidden md:flex">
               Volvox 1.0
             </Chip>
             <Button

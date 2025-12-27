@@ -5,13 +5,18 @@ import { DateValue, CalendarDate } from "@internationalized/date";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { ResearchCard } from "./ResearchCard";
+import { useRef } from "react";
 import { Skeleton } from "@heroui/skeleton";
 import { DatePicker } from "@heroui/react";
 import { Divider } from "@heroui/divider";
 import { useAuthStore } from "@/store/authStore";
 import { ResearchWork } from "@/types";
 import { SearchIcon } from "../icons";
-import { MagnifyingGlassCircleIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  MagnifyingGlassCircleIcon,
+  PlusIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 
 interface ResearchWorkListProps {
   researchWorks?: ResearchWork[];
@@ -72,17 +77,29 @@ export function ResearchWorkList({
     );
   });
 
-  // download file function
+  // Per-card loading state
+  const [loadingOpenId, setLoadingOpenId] = useState<string | null>(null);
+  const [loadingDownloadId, setLoadingDownloadId] = useState<string | null>(
+    null
+  );
+
+  // download/open file function with loading state
   async function handleDownload(
     fileId: string,
     fileName: string,
-    mode: "open" | "download"
+    mode: "open" | "download",
+    cardId: string
   ) {
+    if (mode === "open") setLoadingOpenId(cardId);
+    if (mode === "download") setLoadingDownloadId(cardId);
     try {
       const authToken = useAuthStore.getState().getAuthToken();
       await openOrDownloadFile(fileId, authToken || "", mode, fileName);
     } catch (error) {
       console.error("Error downloading file:", error);
+    } finally {
+      if (mode === "open") setLoadingOpenId(null);
+      if (mode === "download") setLoadingDownloadId(null);
     }
   }
 
@@ -169,20 +186,35 @@ export function ResearchWorkList({
             No documents uploaded.
           </div>
         ) : (
-          filtered.map((r) => (
-            <ResearchCard
-              key={r._id || r.id}
-              research={r}
-              onOpen={(fileId) =>
-                handleDownload(fileId, r.fileName || "document", "open")
-              }
-              onDownload={(fileId) =>
-                handleDownload(fileId, r.fileName || "document", "download")
-              }
-              onEdit={onEdit}
-              onDelete={onDelete}
-            />
-          ))
+          filtered.map((r) => {
+            const cardId: string = (r._id || r.id) ?? "";
+            return (
+              <ResearchCard
+                key={cardId}
+                research={r}
+                onOpen={(fileId: string) =>
+                  handleDownload(
+                    fileId,
+                    r.fileName || "document",
+                    "open",
+                    cardId
+                  )
+                }
+                onDownload={(fileId: string) =>
+                  handleDownload(
+                    fileId,
+                    r.fileName || "document",
+                    "download",
+                    cardId
+                  )
+                }
+                onEdit={onEdit}
+                onDelete={onDelete}
+                loadingOpen={loadingOpenId === cardId}
+                loadingDownload={loadingDownloadId === cardId}
+              />
+            );
+          })
         )}
       </div>
     </div>

@@ -15,8 +15,11 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import Image from "next/image";
+
+import { Spinner } from "@heroui/spinner";
+
 import { ResearchWork } from "@/types";
+import Image from "next/image";
 
 interface ResearchCardProps {
   research: ResearchWork;
@@ -24,6 +27,8 @@ interface ResearchCardProps {
   onDownload: (fileId: string) => void;
   onEdit: (research: ResearchWork) => void;
   onDelete: (researchId: string) => void;
+  loadingOpen?: boolean;
+  loadingDownload?: boolean;
 }
 
 export function ResearchCard({
@@ -32,6 +37,8 @@ export function ResearchCard({
   onDownload,
   onEdit,
   onDelete,
+  loadingOpen = false,
+  loadingDownload = false,
 }: ResearchCardProps) {
   const ext =
     (research.extension || research.fileType || "").toLowerCase() ||
@@ -133,11 +140,14 @@ export function ResearchCard({
             variant="flat"
             size="sm"
             onPress={() => research.file_id && onOpen(research.file_id)}
-            isDisabled={!research.file_id}
+            isDisabled={!research.file_id || loadingOpen}
             className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
           >
-            {/*  open icon */}
-            <FolderOpenIcon className="w-4 h-4" />
+            {loadingOpen ? (
+              <Spinner size="sm" color="primary" />
+            ) : (
+              <FolderOpenIcon className="w-4 h-4" />
+            )}
             Open
           </Button>
           <Button
@@ -146,10 +156,13 @@ export function ResearchCard({
             size="sm"
             className="flex items-center gap-2 px-3 py-2 text-base sm:text-sm w-full sm:w-auto justify-center"
             onPress={() => research.file_id && onDownload(research.file_id)}
-            isDisabled={!research.file_id}
+            isDisabled={!research.file_id || loadingDownload}
           >
-            {/* download icon */}
-            <ArrowDownCircleIcon className="w-4 h-4" />
+            {loadingDownload ? (
+              <Spinner size="sm" color="secondary" />
+            ) : (
+              <ArrowDownCircleIcon className="w-4 h-4" />
+            )}
             Download
           </Button>
         </div>

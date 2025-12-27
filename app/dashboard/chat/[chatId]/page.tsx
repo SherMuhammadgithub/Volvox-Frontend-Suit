@@ -81,7 +81,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-[88vh] max-w-7xl mx-auto w-full">
+    <div className="flex flex-col h-[78vh] md:h-[88vh] overflow-hidden max-w-7xl mx-auto w-full">
       {/* Chat title only */}
       {/* <span className="px-4 pt-2  text-lg font-semibold text-default-900">
         {loadingChat ? "Loading..." : currentChat?.chat_title || "Chat"}

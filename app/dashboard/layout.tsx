@@ -292,7 +292,7 @@ export default function DashboardLayout({
   return (
     <>
       <DashboardNavbar />
-      <div className="flex h-[91vh]">
+      <div className="flex md:h-[91vh]">
         {/* Desktop sidebar */}
 
         <div className="hidden md:flex h-full flex-col w-64 bg-white dark:bg-default-100 border-r border-default-200">
