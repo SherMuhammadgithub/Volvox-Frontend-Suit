@@ -1,5 +1,8 @@
 import axios from "axios";
-import { extractJsonArrayFromTextResponse } from "./utils";
+import {
+  extractJsonArrayFromTextResponse,
+  extractSummaryFromVideoTextResponse,
+} from "./utils";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "";
 
@@ -62,6 +65,6 @@ export async function summarizeVideo({
     }
   );
 
-  const data = extractJsonArrayFromTextResponse(response.data) as any;
+  const data = extractSummaryFromVideoTextResponse(response.data) as any;
   return data;
 }

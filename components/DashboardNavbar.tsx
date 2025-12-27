@@ -6,7 +6,7 @@ const navLinks = [
   { label: "Volvox", key: "volvox", selected: true },
   { label: "Kick Start", key: "kickstart" },
   { label: "Innoscope", key: "innoscope" },
-  { label: "Smart Search", key: "smart_search" },
+  { label: "Smart Research", key: "smart_search" },
 ];
 
 function getAuthSessionData() {
