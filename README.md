@@ -1,53 +1,71 @@
-# Next.js & HeroUI Template
+# Volvox: AI Research Assistant (Frontend)
 
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
+A Next.js 15 frontend for **Volvox**, an AI research assistant. Upload research documents or paste a YouTube link, chat with an AI grounded in that content, and get summaries, with chat history saved per session.
 
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+**Live demo:** [add your Vercel URL]
+**Backend repo:** [add link] (FastAPI, LangChain, FAISS, Gemini, MongoDB)
 
-## Technologies Used
+![Chat view](docs/screenshots/03-chat-response.png)
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [HeroUI v2](https://heroui.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+## Features
 
-## How to Use
+- **Chat with your research:** ask questions and get answers grounded in your uploaded documents, with a toggle for web search
+- **Saved chat history:** recent chats appear in the sidebar and reopen where you left off
+- **Research library:** upload, search by title or date range, open, download, edit and delete documents
+- **Summaries:** summarize one or several documents at once, or paste a YouTube link for a transcript summary
+- **Auth:** email and password sign-in with JWT, plus Google sign-in
+- **Light and dark themes**
+- **Installable PWA**
 
-### Use the template with create-next-app
+## Screenshots
 
-To create a new project based on this template using `create-next-app`, run the following command:
+| Sign in | New chat |
+| --- | --- |
+| ![Sign in](docs/screenshots/01-login.png) | ![New chat](docs/screenshots/02-new-chat.png) |
 
-```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
+| Research library | Summarize |
+| --- | --- |
+| ![Research library](docs/screenshots/04-research-library.png) | ![Summarize](docs/screenshots/05-summarize.png) |
+
+## Tech Stack
+
+| Area | Tools |
+| --- | --- |
+| Framework | Next.js 15 (App Router), React, TypeScript |
+| UI | HeroUI, Tailwind CSS |
+| State | Zustand |
+| Auth | JWT against the FastAPI backend |
+| Deployment | Vercel |
+
+## How It Fits Together
+
+```
+Browser (Next.js 15, PWA)
+        |  REST + JWT
+        v
+FastAPI backend --> MongoDB + GridFS (documents, chat history)
+                --> FAISS (vector search)
+                --> Gemini (embeddings + answers)
 ```
 
-### Install dependencies
+The frontend only talks to the backend API. Retrieval and generation happen server-side, so no model keys ever reach the browser.
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+## Getting Started
 
 ```bash
+git clone [add repo url]
+cd [repo folder]
 npm install
-```
-
-### Run the development server
-
-```bash
+cp .env.example .env.local   # then set the backend API URL
 npm run dev
 ```
 
-### Setup pnpm (optional)
+Open http://localhost:3000. You will need the backend running (see the backend repo) or a deployed API URL in your env file.
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+## What I Built
 
-```bash
-public-hoist-pattern[]=*@heroui/*
-```
+I built the whole frontend: the auth screens, chat interface with session history, document manager with search and filters, the summarizer, theming, and the PWA setup. I also built the FastAPI backend it runs on.
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+## Author
 
-## License
-
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+**Sher Muhammad Iqbal**: [Portfolio](https://shermuhammad.vercel.app) · [LinkedIn](https://www.linkedin.com/in/sher-muhammad-448588290)
