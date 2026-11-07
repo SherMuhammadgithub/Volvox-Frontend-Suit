@@ -5,7 +5,7 @@ A Next.js 15 frontend for **Volvox**, an AI research assistant. Upload research 
 **Live demo:** [add your Vercel URL]
 **Backend repo:** [add link] (FastAPI, LangChain, FAISS, Gemini, MongoDB)
 
-![Chat view](docs/screenshots/03-chat-response.png)
+![Chat view](public/03-chat-response.png)
 
 ## Features
 
@@ -21,11 +21,11 @@ A Next.js 15 frontend for **Volvox**, an AI research assistant. Upload research 
 
 | Sign in | New chat |
 | --- | --- |
-| ![Sign in](docs/screenshots/01-login.png) | ![New chat](docs/screenshots/02-new-chat.png) |
+| ![Sign in](public/01-login.png) | ![New chat](docs/screenshots/02-new-chat.png) |
 
 | Research library | Summarize |
 | --- | --- |
-| ![Research library](docs/screenshots/04-research-library.png) | ![Summarize](docs/screenshots/05-summarize.png) |
+| ![Research library](public/04-research-library.png) | ![Summarize](docs/screenshots/05-summarize.png) |
 
 ## Tech Stack
 
