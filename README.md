@@ -21,11 +21,11 @@ A Next.js 15 frontend for **Volvox**, an AI research assistant. Upload research 
 
 | Sign in | New chat |
 | --- | --- |
-| ![Sign in](public/01-login.png) | ![New chat](docs/screenshots/02-new-chat.png) |
+| ![Sign in](public/01-login.png) | ![New chat](public/02-new-chat.png) |
 
 | Research library | Summarize |
 | --- | --- |
-| ![Research library](public/04-research-library.png) | ![Summarize](docs/screenshots/05-summarize.png) |
+| ![Research library](public/04-research-library.png) | ![Summarize](public/05-summarize.png) |
 
 ## Tech Stack
 
